@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import { getEstudiantes } from "../api/estudiantes";
 import { getActividades } from "../api/actividades";
 import { getGrados } from "../api/grados";
@@ -10,7 +9,6 @@ export default function Dashboard() {
     const [grados, setGrados] = useState([]);
 
     useEffect(() => {
-        // Cargar datos básicos
         getEstudiantes().then(setEstudiantes).catch(console.error);
         getActividades().then(setActividades).catch(console.error);
         getGrados().then(setGrados).catch(console.error);
@@ -18,31 +16,104 @@ export default function Dashboard() {
 
     return (
         <div>
-            <h1>Dashboard</h1>
+            
+            <div style={styles.header}>
+                <h2>Bienvenido [NOMBRE]</h2>
+                <span>Año escolar - 2026</span>
+            </div>
 
-            <h2>Resumen</h2>
+            {/** AQUI VAN LAS CARDS **/}
+            <div style={styles.cards}>
+                <Card title="Salones" value={grados.length} />
+                <Card title="Estudiantes" value={estudiantes.length} />
+                <Card title="Actividades" value={actividades.length} />
+            </div>
 
-            <ul>
-                <li>Total estudiantes: {estudiantes.length}</li>
-                <li>Total actividades: {actividades.length}</li>
-                <li>Total grados: {grados.length}</li>
-            </ul>
+            {/* IFNROMACION */}
+            <div style={styles.grid}>
+                {/* ACTIVIDADES */}
+                <div style={styles.box}>
+                    <h3>Actividades del día</h3>
+                    <hr />
 
-            <hr />
-
-            <h2>Últimos estudiantes</h2>
-
-            {estudiantes.length === 0 ? (
-                <p>No hay estudiantes</p>
-            ) : (
-                <ul>
-                    {estudiantes.slice(0, 5).map(est => (
-                        <li key={est.id}>
-                            {est.nombre} {est.apellido}
-                        </li>
+                    {actividades.slice(0, 6).map((act, i) => (
+                        <div key={i} style={styles.item}>
+                            <span>{act.nombre || "Actividad"}</span>
+                            <span>Puntaje: {act.puntaje || 100}</span>
+                        </div>
                     ))}
-                </ul>
-            )}
+                </div>
+
+                {/* GRAFICO DE DISTRIBUCION DE ESTUDIANTES */}
+                <div style={styles.box}>
+                    <h3>Distribución</h3>
+                    <hr />
+
+                    <div style={{ textAlign: "center", marginTop: "40px" }}>
+                        aqui hay q poner la grafica
+                    </div>
+                </div>
+
+            </div>
         </div>
     );
 }
+
+/* 🔹 Card reutilizable */
+function Card({ title, value }) {
+    return (
+        <div style={styles.card}>
+            <h4>{title}</h4>
+            <span style={{ fontSize: "22px", fontWeight: "bold" }}>
+                {value}
+            </span>
+        </div>
+    );
+}
+
+//! CSS QUE HAY QUE MOVER
+const styles = {
+
+    header: {
+        background: "var(--card-bg)",
+        padding: "20px",
+        borderRadius: "12px",
+        marginBottom: "20px",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+    },
+
+    cards: {
+        display: "flex",
+        gap: "20px",
+        marginBottom: "20px",
+    },
+
+    card: {
+        flex: 1,
+        background: "var(--card-bg)",
+        padding: "20px",
+        borderRadius: "12px",
+        textAlign: "center",
+    },
+
+    grid: {
+        display: "grid",
+        gridTemplateColumns: "2fr 1fr",
+        gap: "20px",
+    },
+
+    box: {
+        background: "var(--card-bg)",
+        padding: "20px",
+        borderRadius: "12px",
+    },
+
+    item: {
+        display: "flex",
+        justifyContent: "space-between",
+        padding: "8px 0",
+        borderBottom: "1px solid #eee",
+    },
+};

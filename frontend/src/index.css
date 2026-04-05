@@ -1,22 +1,37 @@
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
+
+  --primary: #2E5090;
+  --secondary: #577399;
+  --light-blue: #BDD5EA;
+  --background: #F7F7FF;
+  --danger: #FE5F55;
+
+
+  --text: #577399;
+  --text-h: #2E5090;
+
+  --bg: #F7F7FF;
+  --card-bg: #ffffff;
+  --border: #e3e8f0;
+
   --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
+
+  --accent: #2E5090;
+  --accent-bg: rgba(46, 80, 144, 0.1);
+  --accent-border: rgba(46, 80, 144, 0.3);
+
   --social-bg: rgba(244, 243, 236, 0.5);
   --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+    rgba(46, 80, 144, 0.1) 0 10px 20px -5px,
+    rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+
 
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
+  font: 16px/145% var(--sans);
+  letter-spacing: 0.2px;
   color-scheme: light dark;
   color: var(--text);
   background: var(--bg);
@@ -32,17 +47,19 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
+    --text: #BDD5EA;
+    --text-h: #F7F7FF;
+    --bg: #1e2a3a;
+    --card-bg: #39506f;
+    --border: #3a4d66;
     --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
+    --accent: #577399;
+    --accent-bg: rgba(87, 115, 153, 0.2);
+    --accent-border: rgba(87, 115, 153, 0.4);
     --social-bg: rgba(47, 48, 58, 0.5);
     --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+      rgba(0, 0, 0, 0.4) 0 10px 20px -5px,
+      rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
   }
 
   #social .button-icon {
@@ -55,7 +72,7 @@ body {
 }
 
 #root {
-  width: 1126px;
+  width: 100%;
   max-width: 100%;
   margin: 0 auto;
   text-align: center;
