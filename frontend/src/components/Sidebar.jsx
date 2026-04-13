@@ -5,6 +5,12 @@ import {
 } from "@coreui/react";
 
 import { NavLink } from "react-router-dom";
+import { logout } from "../api/auth";
+
+const handleLogout = () => {
+    logout();
+    window.location.href = "/login";
+};
 
 export default function Sidebar() {
     return (
@@ -31,6 +37,10 @@ export default function Sidebar() {
                 <NavItem to="/asistencia" label="Actividades" />
 
             </CSidebarNav>
+
+            <button onClick={handleLogout}>
+                Cerrar Sesión
+            </button>
         </CSidebar>
     );
 }

@@ -15,4 +15,5 @@ router.register(r'salones', SalonViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('perfil/', perfil),
 ]

@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 from .models import *
 from .serializers import *
@@ -7,6 +7,19 @@ from .serializers import *
 # permisos
 from .permissions import EsDocente, EsEstudiante
 from rest_framework.permissions import IsAuthenticated
+
+# perfiles a usuarios y estudiantes
+@api_view(['GET'])
+def perfil(request):
+    user = request.user
+
+    if user.groups.filter(name="Docente").exists():
+        return Response({"rol": "docente"})
+    
+    if user.groups.filter(name="Estudiante").exists():
+        return Response({"rol": "estudiante"})
+    
+    return Response({"rol": "desconocido"})
 
 
 class EstudianteViewSet(viewsets.ModelViewSet):
