@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 
 # ** Modelo para el grado
 class Grado(models.Model):
@@ -7,6 +7,7 @@ class Grado(models.Model):
 
 # ** Modelo para los docentes
 class Docente(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True) #? Relacionando el docente a la tabla usuarios de django
     nombre = models.CharField(max_length=100)
     apellido = models.CharField(max_length=100)
     cedula = models.CharField(max_length=50)
@@ -23,6 +24,7 @@ class Salon(models.Model):
 
 # ** Modelo para los estudiantes
 class Estudiante(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     nombre = models.CharField(max_length=100)
     apellido = models.CharField(max_length=100)
     cedula = models.CharField(max_length=50)

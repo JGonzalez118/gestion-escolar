@@ -42,6 +42,12 @@ class NotaSerializer(serializers.ModelSerializer):
         model = Nota
         fields = '__all__'
 
+    # ? Asegurar que las notas estén dentro del rango
+    def validate_nota(self, value):
+        if value < 1 or value > 5:
+            raise serializers.ValidationError("La calificación debe ser de 1 a 5")
+        return value
+    
 class AsistenciaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Asistencia
