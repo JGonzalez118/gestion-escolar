@@ -32,7 +32,7 @@ export default function Sidebar() {
             <CSidebarNav style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
 
                 <NavItem to="/" label="Dashboard" />
-                <NavItem to="/grados" label="Salón" />
+                <NavItem to="/salon" label="Salón" />
                 <NavItem to="/estudiantes" label="Estudiantes" />
                 <NavItem to="/asistencia" label="Actividades" />
 

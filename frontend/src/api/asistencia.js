@@ -2,7 +2,7 @@
 
 import request from "./client";
 
-export const getAsistencia = () => {
+export const getAsistencias = () => {
     return request("/asistencia/");
 };
 
