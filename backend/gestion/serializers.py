@@ -49,6 +49,12 @@ class NotaSerializer(serializers.ModelSerializer):
         return value
     
 class AsistenciaSerializer(serializers.ModelSerializer):
+
+    estudiante_nombre = serializers.CharField(
+        source='estudiante.nombre',
+        read_only=True
+    )
+
     class Meta:
         model = Asistencia
         fields = '__all__'
