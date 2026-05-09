@@ -6,6 +6,10 @@ export const getSalones = () => {
     return request("/salones/");
 };
 
+export const getMiSalon = () => {
+    return request("/salones/mi_salon/");
+};
+
 export const crearSalon = (data) => {
     return request("/salones/", {
         method: "POST",

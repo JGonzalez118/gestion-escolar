@@ -12,6 +12,16 @@ const Login = () => {
             await login(username, password);
             const perfil = await getPerfil();
             localStorage.setItem("rol", perfil.rol);
+
+            localStorage.setItem(
+                "salon_id",
+                perfil.salon?.id
+            );
+
+            localStorage.setItem(
+                "salon_nombre",
+                perfil.salon?.nombre
+            );
             
             console.log(perfil);
             alert("Login Exitoso");
