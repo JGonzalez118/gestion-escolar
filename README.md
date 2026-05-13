@@ -9,6 +9,7 @@ Dashboard para gestionar la asistencia y las calificaciones de los estudiantes.
 ### Requisitos
 - Python 3.x
 - Node.js
+- pnpm versión 11 en adelante
 
 Clona el proyecto
 
@@ -71,12 +72,12 @@ cd frontend
 ```
 Instala las dependencias
 ```bash
-npm install
+pnpm install
 ```
 
 Ejecuta el servidor
 ```bash
-npm run dev
+pnpm run dev
 ```
 - ruta http://localhost:5173/
 
