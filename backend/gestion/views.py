@@ -83,6 +83,10 @@ class EstudianteViewSet(viewsets.ModelViewSet):
 
         user = self.request.user
 
+        # ADMIN
+        if user.is_superuser:
+            return Estudiante.objects.all()
+
         # DOCENTE
         if user.groups.filter(name="Docente").exists():
 
@@ -90,9 +94,12 @@ class EstudianteViewSet(viewsets.ModelViewSet):
                 user=user
             )
 
-            salon = Salon.objects.get(
+            salon = Salon.objects.filter(
                 consejero=docente
-            )
+            ).first()
+
+            if not salon:
+                return Estudiante.objects.none()
 
             return Estudiante.objects.filter(
                 salon=salon,

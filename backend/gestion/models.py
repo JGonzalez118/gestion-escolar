@@ -17,7 +17,7 @@ class Docente(models.Model):
 # ** Modelo para los salones
 class Salon(models.Model):
     nombre = models.CharField(max_length=100)
-
+    anio_escolar = models.IntegerField(default=2026)   
     #! referencias al grado del salon y su consejero
     grado = models.ForeignKey(Grado, on_delete=models.CASCADE)
     consejero = models.ForeignKey(Docente, on_delete=models.CASCADE)
@@ -37,6 +37,7 @@ class Estudiante(models.Model):
 class Materia(models.Model):
     nombre = models.CharField(max_length=100)
     docente = models.ForeignKey(Docente, on_delete=models.CASCADE) #! referencia al docente que da la materia
+    grado = models.ForeignKey(Grado, on_delete=models.CASCADE) #! referencia al grado al que pertenece la materia
 
 # ** Modelo para los trimestres
 class Periodo(models.Model):
