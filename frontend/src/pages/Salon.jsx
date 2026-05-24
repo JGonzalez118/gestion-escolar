@@ -7,6 +7,8 @@ import { getMaterias } from "../api/materias";
 import AsistenciaCard from "../components/AsistenciaCard";
 import ClaseActualCard from "../components/ClaseActualCard";
 
+import { getPerfil } from "../api/auth";
+
 import "../styles/salon.css";
 
 const Salon = () => {
@@ -31,6 +33,15 @@ const Salon = () => {
         }
     };
 
+    // USUARIO ACTUAL CONECTADO <- SACAMOS EL SALÓN
+    const [perfil, setPerfil] = useState(null);
+
+    useEffect(() => {
+        getPerfil()
+        .then(setPerfil)
+        .catch(console.error);
+    }, []);
+
     return (
         <div className="salon-layout">
 
@@ -41,7 +52,10 @@ const Salon = () => {
                 <header className="salon-header">
                     <div className="header-title">
                         <div className="header-bar"></div>
-                        <h1>Salón 6to - A</h1>
+                        <h1>
+                            Salon:  
+                            {perfil?.salon?.nombre}
+                        </h1>
                     </div>
 
                     <div className="header-year">

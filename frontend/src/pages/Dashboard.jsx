@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getEstudiantes } from "../api/estudiantes";
 import { getActividades } from "../api/actividades";
 import { getGrados } from "../api/grados";
+import { getPerfil } from "../api/auth";
 
 export default function Dashboard() {
     const [estudiantes, setEstudiantes] = useState([]);
@@ -14,11 +15,20 @@ export default function Dashboard() {
         getGrados().then(setGrados).catch(console.error);
     }, []);
 
+    // USUARIO ACTUAL CONECTADO
+    const [perfil, setPerfil] = useState(null);
+
+    useEffect(() => {
+        getPerfil()
+        .then(setPerfil)
+        .catch(console.error);
+    }, []);
+
     return (
         <div>
             
             <div style={styles.header}>
-                <h2>Bienvenido [NOMBRE]</h2>
+                <h2>Bienvenido {perfil?.nombre_completo || "..."}</h2>
                 <span>Año escolar - 2026</span>
             </div>
 

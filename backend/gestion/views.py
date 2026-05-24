@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-from rest_framework.decorators import action, api_view
+from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.response import Response
 from .models import *
 from .serializers import *
@@ -23,11 +23,17 @@ from rest_framework.permissions import IsAuthenticated
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def perfil(request):
     user = request.user
     # DOCENTE
     if user.groups.filter(name="Docente").exists():
-        docente = Docente.objects.get(user=user)
+        try:
+            docente = Docente.objects.get(user=user)
+        except Docente.DoesNotExist:
+            return Response({
+                "error": "No existe un perfil docente asociado."
+            }, status=404)
         salon = Salon.objects.filter(
             consejero=docente
         ).first()
@@ -37,36 +43,55 @@ def perfil(request):
             "username": user.username,
             "rol": "docente",
 
+            "nombre_completo":
+                f"{docente.nombre} {docente.apellido}",
+
             "docente": {
                 "id": docente.id,
                 "nombre": docente.nombre,
                 "apellido": docente.apellido,
+                "cedula": docente.cedula,
+                "telefono": docente.telefono
             },
 
             "salon": {
                 "id": salon.id if salon else None,
                 "nombre": salon.nombre if salon else None,
+                "grado": salon.grado.nombre if salon else None
             }
         })
 
     # ESTUDIANTE
     if user.groups.filter(name="Estudiante").exists():
-        estudiante = Estudiante.objects.get(user=user)
+        try:
+            estudiante = Estudiante.objects.get(
+                user=user
+            )
+        except Estudiante.DoesNotExist:
+            return Response({
+                "error": "No existe un perfil estudiante asociado."
+            }, status=404)
         return Response({
 
             "id": user.id,
             "username": user.username,
             "rol": "estudiante",
 
+            "nombre_completo":
+                f"{estudiante.nombre} {estudiante.apellido}",
+
             "estudiante": {
                 "id": estudiante.id,
                 "nombre": estudiante.nombre,
                 "apellido": estudiante.apellido,
+                "cedula": estudiante.cedula,
+                "genero": estudiante.genero
             },
 
             "salon": {
                 "id": estudiante.salon.id,
                 "nombre": estudiante.salon.nombre,
+                "grado": estudiante.salon.grado.nombre
             }
         })
 
