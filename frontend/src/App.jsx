@@ -4,10 +4,11 @@ import Dashboard from "./pages/Dashboard";
 import Estudiantes from "./pages/Estudiantes";
 import Asistencia from "./pages/Asistencia";
 import Grados from "./pages/Grados";
-import Sidebar from "./components/Sidebar";
-import Login from "./pages/login";
-import PrivateRoute from "./components/PrivateRoute";
 import Salon from "./pages/Salon";
+import Login from "./pages/login";
+
+import Sidebar from "./components/Sidebar";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   const location = useLocation();
@@ -28,13 +29,35 @@ function App() {
       >
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/estudiantes" element={<Estudiantes />} />
-          <Route path="/asistencia" element={<Asistencia />} />
-          <Route path="/salon" element={<Salon />} />
 
-          //! EJEMPLO A USAR - PRIVATE ROUTE DETERMINA LOS PERMISOS Y LO LLEVA A LA PAGINA
-          // ! EN ESTE EJEMPLO EL ESTUDIANTE NO DEBE VER TODOS LOS OTROS GRADOS 
+          <Route path="/" 
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          } />
+
+          <Route path="/estudiantes" 
+          element={
+          <PrivateRoute>
+            <Estudiantes />
+          </PrivateRoute>
+          } />
+          
+          <Route path="/asistencia" 
+          element={
+          <PrivateRoute>
+            <Asistencia />
+          </PrivateRoute>
+          } />
+
+          <Route path="/salon"
+          element={
+          <PrivateRoute>
+            <Salon />
+          </PrivateRoute>
+          } />
+          
           <Route
             path="/grados"
             element={

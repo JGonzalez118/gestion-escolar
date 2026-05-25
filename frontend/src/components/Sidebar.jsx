@@ -6,6 +6,7 @@ import {
 
 import { NavLink } from "react-router-dom";
 import { logout } from "../api/auth";
+import { useTheme } from "../context/ThemeContext";
 
 const handleLogout = () => {
     logout();
@@ -13,6 +14,9 @@ const handleLogout = () => {
 };
 
 export default function Sidebar() {
+
+    const { theme, toggleTheme } = useTheme();
+
     return (
         <CSidebar
             style={{
@@ -37,6 +41,25 @@ export default function Sidebar() {
                 <NavItem to="/asistencia" label="Actividades" />
 
             </CSidebarNav>
+
+            <button
+                onClick={toggleTheme}
+                style={{
+                    marginTop: "auto",
+                    padding: "10px",
+                    borderRadius: "10px",
+                    border: "none",
+                    cursor: "pointer"
+                }}
+            >
+
+                {
+                    theme === "light"
+                        ? "🌙 Modo oscuro"
+                        : "☀️ Modo claro"
+                }
+
+            </button>
 
             <button onClick={handleLogout}>
                 Cerrar Sesión

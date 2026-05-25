@@ -22,7 +22,12 @@ const Login = () => {
                 "salon_nombre",
                 perfil.salon?.nombre
             );
-            
+
+            localStorage.setItem(
+                "perfil",
+                JSON.stringify(perfil)
+            );
+
             console.log(perfil);
             alert("Login Exitoso");
 

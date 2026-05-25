@@ -31,4 +31,11 @@ export const getPerfil = () => {
 export const logout = () => {
     localStorage.removeItem("access");
     localStorage.removeItem("refresh");
+
+    localStorage.removeItem("rol");
+    localStorage.removeItem("salon_id");
+    localStorage.removeItem("salon_nombre");
+    localStorage.removeItem("perfil");
+
+    window.location.href = "/login";
 };
