@@ -1,79 +1,101 @@
+/* ================= TEMA BASE ================= */
+
 :root {
 
-  --primary: #2E5090;
-  --secondary: #577399;
-  --light-blue: #BDD5EA;
-  --background: #F7F7FF;
-  --danger: #FE5F55;
+  --primary:#2E5090;
+  --secondary:#577399;
+  --light-blue:#BDD5EA;
+  --background:#efeff4;
+  --danger:#FE5F55;
 
+  --text:#577399;
+  --text-h:#2E5090;
 
-  --text: #577399;
-  --text-h: #2E5090;
+  --bg:#dfdfed;
+  --card-bg:#ffffff;
+  --border:#8795ab;
 
-  --bg: #F7F7FF;
-  --card-bg: #ffffff;
-  --border: #e3e8f0;
+  --code-bg:#f4f3ec;
 
-  --code-bg: #f4f3ec;
+  --accent:#2E5090;
+  --accent-bg:rgba(46,80,144,.1);
+  --accent-border:rgba(46,80,144,.3);
 
-  --accent: #2E5090;
-  --accent-bg: rgba(46, 80, 144, 0.1);
-  --accent-border: rgba(46, 80, 144, 0.3);
+  --social-bg:rgba(208,213,234,.5);
 
-  --social-bg: rgba(208, 213, 234, 0.5);
   --shadow:
-    rgba(46, 80, 144, 0.1) 0 10px 20px -5px,
-    rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+      rgba(46,80,144,.1) 0 10px 20px -5px,
+      rgba(0,0,0,.05) 0 4px 6px -2px;
 
+  --sans:system-ui,'Segoe UI',Roboto,sans-serif;
+  --heading:system-ui,'Segoe UI',Roboto,sans-serif;
+  --mono:ui-monospace,Consolas,monospace;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 16px/145% var(--sans);
-  letter-spacing: 0.2px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #BDD5EA;
-    --text-h: #F7F7FF;
-    --bg: #1e2a3a;
-    --card-bg: #39506f;
-    --border: #3a4d66;
-    --code-bg: #1f2028;
-    --accent: #577399;
-    --accent-bg: rgba(87, 115, 153, 0.2);
-    --accent-border: rgba(87, 115, 153, 0.4);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 20px -5px,
-      rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+  font: 16px/145% var(--sans); 
+  letter-spacing: 0.2px; 
+  color-scheme: light dark; 
+  color: var(--text); 
+  background: var(--bg); 
+  font-synthesis: none; 
+  text-rendering: optimizeLegibility; 
+  -webkit-font-smoothing: antialiased; 
+  -moz-osx-font-smoothing: grayscale; 
+  
+  @media (max-width: 1024px) { 
+    font-size: 16px; 
   }
 
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+  color-scheme:light;
 }
 
-body {
-  margin: 0;
+
+/* ================= OSCURO ================= */
+
+[data-theme="dark"]{
+
+  --text:#BDD5EA;
+  --text-h:#F7F7FF;
+
+  --bg:#1e2a3a;
+  --card-bg:#39506f;
+  --border:#3a4d66;
+  --code-bg:#1f2028;
+
+  --accent:#577399;
+  --accent-bg:rgba(87,115,153,.2);
+  --accent-border:rgba(87,115,153,.4);
+
+  --social-bg:rgba(47,48,58,.5);
+
+  --shadow:
+      rgba(0,0,0,.4) 0 10px 20px -5px,
+      rgba(0,0,0,.25) 0 4px 6px -2px;
+
+  color-scheme:dark;
 }
 
-#root {
-  width: 100%;
-  max-width: 100%;
+
+/* ================= CLARO ================= */
+
+[data-theme="light"]{
+  color-scheme:light;
+}
+
+
+/* ================= BASE ================= */
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  transition:
+      background .3s,
+      color .3s;
+}
+
+#root{
+  width:100%;
+  max-width:100%;
   margin: 0 auto;
   text-align: center;
   border-inline: 1px solid var(--border);
@@ -81,13 +103,18 @@ body {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  background: var(--bg);
+  transition:
+      background .3s,
+      border-color .3s;
 }
 
-h1,
-h2 {
+
+h1,h2{
   font-family: var(--heading);
   font-weight: 500;
-  color: var(--text-h);
+  color:var(--text-h);
+  transition:color .3s;
 }
 
 h1 {

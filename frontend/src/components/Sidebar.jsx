@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
     CSidebar,
     CSidebarNav,
@@ -6,7 +6,7 @@ import {
 
 import { NavLink } from "react-router-dom";
 import { logout } from "../api/auth";
-import { useTheme } from "../context/ThemeContext";
+import { ThemeContext } from "../context/ThemeContext";
 
 const handleLogout = () => {
     logout();
@@ -15,7 +15,7 @@ const handleLogout = () => {
 
 export default function Sidebar() {
 
-    const { theme, toggleTheme } = useTheme();
+    const { toggleTheme, theme } = useContext(ThemeContext);
 
     return (
         <CSidebar
