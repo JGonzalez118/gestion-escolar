@@ -48,7 +48,7 @@ const Salon = () => {
             <main className="salon-main">
 
                 {/* CAMBIAR ESTE HEADER A UNO DINÁMICO DONDE SE REFLEJE */}
-                {/* EL SALON ACTUAL Y EL AÑO ACTUAL TAMBIÉN */}
+                {/* EL AÑO ACTUAL TAMBIÉN */}
                 <header className="salon-header">
                     <div className="header-title">
                         <div className="header-bar"></div>

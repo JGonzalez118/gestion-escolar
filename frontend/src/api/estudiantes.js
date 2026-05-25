@@ -10,6 +10,10 @@ export const getEstudiantesPorGrado = (gradoId) => {
     return request(`/estudiantes/?grado=${gradoId}`);
 };
 
+export const getEstudiantesMiSalon = () => {
+    return request("/estudiantes/mi_salon")
+};
+
 export const crearEstudiante = (data) => {
     return request("/estudiantes/", {
         method: "POST",

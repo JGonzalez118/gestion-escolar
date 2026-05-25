@@ -141,6 +141,37 @@ class EstudianteViewSet(viewsets.ModelViewSet):
 
         return Estudiante.objects.none()
 
+    @action(detail=False, methods=['get'])
+    def mi_salon(self, request):
+
+        user = request.user
+
+        if not user.groups.filter(name="Docente").exists():
+            return Response([])
+
+        docente = Docente.objects.get(
+            user=user
+        )
+
+        salon = Salon.objects.filter(
+            consejero=docente
+        ).first()
+
+        if not salon:
+            return Response([])
+
+        estudiantes = Estudiante.objects.filter(
+            salon=salon,
+            activo=True
+        )
+
+        serializer = EstudianteSerializer(
+            estudiantes,
+            many=True
+        )
+
+        return Response(serializer.data)
+
 
 class DocenteViewSet(viewsets.ModelViewSet):
     queryset = Docente.objects.filter(activo=True)

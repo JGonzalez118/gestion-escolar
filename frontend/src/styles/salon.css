@@ -135,15 +135,18 @@
 
 .actividad-form {
     padding: 24px;
+    display: flex;
+    flex-direction: column;
+    
 }
 
 .actividad-form input,
 .actividad-form textarea {
     width: 100%;
-
     border: none;
 
-    background: #ededed;
+    background: var(--social-bg);
+    color: var(--text);
 
     border-radius: 18px;
 
@@ -194,7 +197,8 @@
 }
 
 .secondary-btn {
-    background: #e5e5e5;
+    background: var(--secondary);
+    color: white;
 }
 
 .primary-btn:hover,
