@@ -90,3 +90,23 @@ pnpm run dev
 ```
 - Crea un usuario, correo y contraseña (que no se te olviden)
 - Luego accedes a la ruta: http://127.0.0.1:8000/admin
+
+### Poblar la base de datos con datos de prueba
+
+Después de crear el superusuario puedes llenar automáticamente la base de datos con información inicial (grados, salones, docentes, estudiantes, materias, periodos, usuarios y grupos).
+
+Ejecuta:
+
+```bash
+python manage.py seed
+```
+#### Docente
+```bash
+usuario: docente1
+contraseña: 123456
+```
+#### Estudiante
+```bash
+usuario: estudiante1
+contraseña: 123456
+```
