@@ -23,7 +23,7 @@ function App() {
       <div
         style={{
           flex: 1,
-          padding: "20px 30px",
+          padding: isLoginPage ? 0 : "20px 30px",
           overflowY: "auto",
         }}
       >

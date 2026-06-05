@@ -1,0 +1,245 @@
+/* ================= LOGIN ================= */
+
+.login {
+    display: flex;
+    min-height: 100svh;
+    width: 100%;
+    text-align: left;
+}
+
+/* ----- Panel del formulario (izquierda) ----- */
+
+.login__form-panel {
+    flex: 1 1 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    background: var(--bg);
+    transition: background .3s;
+}
+
+.login__form {
+    width: 100%;
+    max-width: 380px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.login__brand {
+    margin-bottom: 8px;
+}
+
+.login__logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    margin-bottom: 14px;
+    color: var(--primary);
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-border);
+    border-radius: 14px;
+}
+
+.login__title {
+    font-family: var(--heading);
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: -1px;
+    color: var(--text-h);
+    margin: 0;
+}
+
+.login__subtitle {
+    color: var(--text);
+    font-size: 15px;
+    margin-top: 6px;
+}
+
+.login__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.login__label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+}
+
+.login__input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    font-size: 15px;
+    font-family: var(--sans);
+    color: var(--text-h);
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+}
+
+.login__input::placeholder {
+    color: var(--text);
+    opacity: .55;
+}
+
+.login__input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-bg);
+}
+
+/* ----- Input de contraseña con toggle ----- */
+
+.login__input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.login__input--password {
+    padding-right: 46px;
+}
+
+.login__toggle {
+    position: absolute;
+    right: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    color: var(--text);
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: color .2s, background .2s;
+}
+
+.login__toggle:hover {
+    color: var(--accent);
+    background: var(--accent-bg);
+}
+
+.login__error {
+    color: var(--danger);
+    font-size: 13px;
+    margin: -6px 0 0;
+}
+
+.login__button {
+    margin-top: 6px;
+    padding: 12px 14px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: var(--sans);
+    color: #fff;
+    background: var(--primary);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background .2s, transform .05s, opacity .2s;
+}
+
+.login__button:hover {
+    background: var(--secondary);
+}
+
+.login__button:active {
+    transform: translateY(1px);
+}
+
+.login__button:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+/* ----- Panel del hero (derecha) ----- */
+
+.login__hero-panel {
+    flex: 1 1 50%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background:
+        linear-gradient(135deg,
+            var(--primary),
+            var(--secondary));
+}
+
+.login__hero-content {
+    position: relative;
+    z-index: 1;
+    color: #fff;
+    padding: 48px;
+    max-width: 420px;
+    text-align: center;
+}
+
+/* ----- Formas decorativas (blobs) ----- */
+
+.login__blob {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(8px);
+}
+
+.login__blob--1 {
+    top: -80px;
+    right: -60px;
+    width: 320px;
+    height: 320px;
+    background: radial-gradient(circle at 30% 30%,
+        rgba(255, 255, 255, .22), transparent 70%);
+}
+
+.login__blob--2 {
+    bottom: -120px;
+    left: -80px;
+    width: 380px;
+    height: 380px;
+    background: radial-gradient(circle at 50% 50%,
+        rgba(189, 213, 234, .25), transparent 70%);
+}
+
+.login__blob--3 {
+    top: 40%;
+    right: 12%;
+    width: 160px;
+    height: 160px;
+    background: radial-gradient(circle at 50% 50%,
+        rgba(255, 255, 255, .12), transparent 70%);
+}
+
+.login__hero-content h2 {
+    color: #fff;
+    font-size: 30px;
+    line-height: 1.2;
+    margin: 0 0 12px;
+}
+
+.login__hero-content p {
+    color: rgba(255, 255, 255, .85);
+    font-size: 16px;
+}
+
+/* ----- Responsive ----- */
+
+@media (max-width: 860px) {
+    .login__hero-panel {
+        display: none;
+    }
+
+    .login__form-panel {
+        flex-basis: 100%;
+    }
+}
