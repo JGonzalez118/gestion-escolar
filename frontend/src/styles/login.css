@@ -1,62 +1,140 @@
-/* ================= LOGIN ================= */
+/* =====================================================
+   LOGIN · Tarjeta centrada
+   Bricolage Grotesque (display) + Hanken Grotesk (cuerpo)
+   ===================================================== */
 
 .login {
-    display: flex;
-    min-height: 100svh;
-    width: 100%;
-    text-align: left;
-}
+    /* Variables propias del login (no tocan el tema global) */
+    --paper: #f4efe4;
+    --paper-2: #ece5d6;
+    --card: #fbf8f1;
+    --field: #ffffff;
+    --ink: #1a3454;
+    --ink-deep: #122941;
+    --ink-soft: #5a6b80;
+    --line: #e0d8c6;
+    --cream: #f3ece0;
+    --accent: #9c8753;
 
-/* ----- Panel del formulario (izquierda) ----- */
-
-.login__form-panel {
-    flex: 1 1 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 40px;
-    background: var(--bg);
-    transition: background .3s;
-}
-
-.login__form {
+    min-height: 100svh;
     width: 100%;
-    max-width: 380px;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
+    padding: 32px;
+    box-sizing: border-box;
+    text-align: left;
+    font-family: 'Hanken Grotesk', system-ui, sans-serif;
+    color: var(--ink);
+    background:
+        radial-gradient(80% 80% at 50% 0%,
+            var(--paper-2), transparent 60%),
+        var(--paper);
 }
 
-.login__brand {
-    margin-bottom: 8px;
+[data-theme="dark"] .login {
+    --paper: #0f1d2e;
+    --paper-2: #16273b;
+    --card: #16263a;
+    --field: #1b2c42;
+    --ink: #e9ddc8;
+    --ink-deep: #0a1623;
+    --ink-soft: #9aaabd;
+    --line: #2a3c52;
+    --cream: #f3ece0;
+    --accent: #c9b079;
 }
 
-.login__logo {
+/* ===================== TOGGLE DE TEMA ===================== */
+
+.login__theme {
+    position: fixed;
+    top: 22px;
+    right: 22px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
-    margin-bottom: 14px;
-    color: var(--primary);
-    background: var(--accent-bg);
-    border: 1px solid var(--accent-border);
-    border-radius: 14px;
+    width: 42px;
+    height: 42px;
+    color: var(--ink-soft);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    cursor: pointer;
+    transition: color .2s, border-color .2s, transform .06s;
+}
+
+.login__theme:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+.login__theme:active {
+    transform: scale(.94);
+}
+
+/* ===================== TARJETA ===================== */
+
+.login__card {
+    width: 100%;
+    max-width: 408px;
+    box-sizing: border-box;
+    padding: 40px 38px 34px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow:
+        0 1px 2px rgba(18, 41, 65, .04),
+        0 18px 40px -16px rgba(18, 41, 65, .18);
+    animation: riseIn .8s .12s cubic-bezier(.2, .7, .2, 1) both;
+}
+
+[data-theme="dark"] .login__card {
+    box-shadow: 0 24px 50px -20px rgba(0, 0, 0, .6);
+}
+
+@keyframes riseIn {
+    from { opacity: 0; transform: translateY(26px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ----- Encabezado ----- */
+
+.login__head {
+    text-align: center;
+    margin-bottom: 28px;
 }
 
 .login__title {
-    font-family: var(--heading);
-    font-size: 32px;
-    font-weight: 600;
-    letter-spacing: -1px;
-    color: var(--text-h);
-    margin: 0;
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-size: 30px;
+    line-height: 1.05;
+    letter-spacing: -.02em;
+    color: var(--ink);
+    margin: 0 0 10px;
 }
 
-.login__subtitle {
-    color: var(--text);
-    font-size: 15px;
-    margin-top: 6px;
+.login__title em {
+    font-style: normal;
+    color: var(--accent);
+}
+
+.login__lead {
+    font-size: 14.5px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin: 0 auto;
+    max-width: 30ch;
+}
+
+/* ===================== FORMULARIO ===================== */
+
+.login__form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
 }
 
 .login__field {
@@ -66,36 +144,11 @@
 }
 
 .login__label {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .04em;
+    color: var(--ink-soft);
 }
-
-.login__input {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 12px 14px;
-    font-size: 15px;
-    font-family: var(--sans);
-    color: var(--text-h);
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    outline: none;
-    transition: border-color .2s, box-shadow .2s;
-}
-
-.login__input::placeholder {
-    color: var(--text);
-    opacity: .55;
-}
-
-.login__input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-bg);
-}
-
-/* ----- Input de contraseña con toggle ----- */
 
 .login__input-wrap {
     position: relative;
@@ -103,18 +156,41 @@
     align-items: center;
 }
 
-.login__input--password {
-    padding-right: 46px;
+/* Inputs en caja, familiares y claros */
+.login__input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--ink);
+    background: var(--field);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+}
+
+.login__input-wrap .login__input {
+    padding-right: 44px;
+}
+
+.login__input::placeholder {
+    color: var(--ink-soft);
+    opacity: .55;
+}
+
+.login__input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
 }
 
 .login__toggle {
     position: absolute;
     right: 8px;
     display: inline-flex;
-    align-items: center;
-    justify-content: center;
     padding: 6px;
-    color: var(--text);
+    color: var(--ink-soft);
     background: transparent;
     border: none;
     border-radius: 8px;
@@ -123,123 +199,82 @@
 }
 
 .login__toggle:hover {
-    color: var(--accent);
-    background: var(--accent-bg);
+    color: var(--ink);
+    background: var(--paper-2);
 }
 
 .login__error {
-    color: var(--danger);
+    margin: -4px 0 0;
     font-size: 13px;
-    margin: -6px 0 0;
+    color: #c0492f;
 }
 
+[data-theme="dark"] .login__error {
+    color: #f0866a;
+}
+
+/* ----- Botón ----- */
+
 .login__button {
-    margin-top: 6px;
-    padding: 12px 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 4px;
+    padding: 13px 20px;
+    font-family: inherit;
     font-size: 15px;
     font-weight: 600;
-    font-family: var(--sans);
-    color: #fff;
-    background: var(--primary);
+    color: var(--cream);
+    background: var(--ink);
     border: none;
     border-radius: 10px;
     cursor: pointer;
-    transition: background .2s, transform .05s, opacity .2s;
+    transition: background .2s, transform .06s, opacity .2s;
 }
 
-.login__button:hover {
-    background: var(--secondary);
+[data-theme="dark"] .login__button {
+    color: var(--ink-deep);
 }
 
-.login__button:active {
+.login__button svg {
+    transition: transform .25s;
+}
+
+.login__button:hover:not(:disabled) {
+    background: var(--ink-deep);
+}
+
+[data-theme="dark"] .login__button:hover:not(:disabled) {
+    background: var(--cream);
+}
+
+.login__button:hover:not(:disabled) svg {
+    transform: translateX(3px);
+}
+
+.login__button:active:not(:disabled) {
     transform: translateY(1px);
 }
 
 .login__button:disabled {
-    opacity: .6;
+    opacity: .45;
     cursor: not-allowed;
 }
 
-/* ----- Panel del hero (derecha) ----- */
+/* ----- Pie ----- */
 
-.login__hero-panel {
-    flex: 1 1 50%;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    background:
-        linear-gradient(135deg,
-            var(--primary),
-            var(--secondary));
-}
-
-.login__hero-content {
-    position: relative;
-    z-index: 1;
-    color: #fff;
-    padding: 48px;
-    max-width: 420px;
+.login__footnote {
+    margin: 24px 0 0;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
     text-align: center;
+    font-size: 12.5px;
+    color: var(--ink-soft);
 }
 
-/* ----- Formas decorativas (blobs) ----- */
-
-.login__blob {
-    position: absolute;
-    border-radius: 50%;
-    pointer-events: none;
-    filter: blur(8px);
-}
-
-.login__blob--1 {
-    top: -80px;
-    right: -60px;
-    width: 320px;
-    height: 320px;
-    background: radial-gradient(circle at 30% 30%,
-        rgba(255, 255, 255, .22), transparent 70%);
-}
-
-.login__blob--2 {
-    bottom: -120px;
-    left: -80px;
-    width: 380px;
-    height: 380px;
-    background: radial-gradient(circle at 50% 50%,
-        rgba(189, 213, 234, .25), transparent 70%);
-}
-
-.login__blob--3 {
-    top: 40%;
-    right: 12%;
-    width: 160px;
-    height: 160px;
-    background: radial-gradient(circle at 50% 50%,
-        rgba(255, 255, 255, .12), transparent 70%);
-}
-
-.login__hero-content h2 {
-    color: #fff;
-    font-size: 30px;
-    line-height: 1.2;
-    margin: 0 0 12px;
-}
-
-.login__hero-content p {
-    color: rgba(255, 255, 255, .85);
-    font-size: 16px;
-}
-
-/* ----- Responsive ----- */
-
-@media (max-width: 860px) {
-    .login__hero-panel {
-        display: none;
-    }
-
-    .login__form-panel {
-        flex-basis: 100%;
+@media (prefers-reduced-motion: reduce) {
+    .login__card {
+        animation: none;
     }
 }
