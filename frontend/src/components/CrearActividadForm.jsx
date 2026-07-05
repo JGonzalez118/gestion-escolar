@@ -1,9 +1,7 @@
 import { useState } from "react";
-
 import { crearActividad } from "../api/actividades";
 
-const CrearActividadForm = () => {
-
+const CrearActividadForm = ({ materiaId, periodoId }) => {
     const [form, setForm] = useState({
         nombre: "",
         puntaje: "",
@@ -30,13 +28,22 @@ const CrearActividadForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if (!materiaId || !periodoId) {
+            alert("No se pudo determinar la materia o el período actual.");
+            return;
+        }
+
+        const payload = {
+            ...form,
+            fecha: new Date().toISOString().split("T")[0], // YYYY-MM-DD
+            materia: materiaId,
+            periodo: periodoId,
+        };
+
         try {
-            await crearActividad(form);
-
+            await crearActividad(payload);
             alert("Actividad creada correctamente");
-
             limpiar();
-
         } catch (error) {
             console.error(error);
         }
@@ -44,9 +51,7 @@ const CrearActividadForm = () => {
 
     return (
         <form className="actividad-form" onSubmit={handleSubmit}>
-
             <h2>Añadir una actividad</h2>
-
             <div className="divider"></div>
 
             <input
@@ -58,7 +63,6 @@ const CrearActividadForm = () => {
             />
 
             <div className="row-inputs">
-
                 <input
                     type="number"
                     placeholder="Puntaje"
@@ -66,7 +70,6 @@ const CrearActividadForm = () => {
                     value={form.puntaje}
                     onChange={handleChange}
                 />
-
                 <input
                     type="text"
                     placeholder="Tipo"
@@ -74,7 +77,6 @@ const CrearActividadForm = () => {
                     value={form.tipo}
                     onChange={handleChange}
                 />
-
             </div>
 
             <textarea
@@ -92,7 +94,6 @@ const CrearActividadForm = () => {
                 >
                     Limpiar campos
                 </button>
-
                 <button
                     type="submit"
                     className="primary-btn"
@@ -100,7 +101,6 @@ const CrearActividadForm = () => {
                     Agregar actividad
                 </button>
             </div>
-
         </form>
     );
 };

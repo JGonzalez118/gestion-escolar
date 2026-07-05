@@ -2,13 +2,14 @@ import { Routes, Route, useLocation } from "react-router-dom";
 
 import Dashboard from "./pages/Dashboard";
 import Estudiantes from "./pages/Estudiantes";
-import Asistencia from "./pages/Asistencia";
+import Asistencia from "./pages/Actividades";
 import Grados from "./pages/Grados";
 import Salon from "./pages/Salon";
 import Login from "./pages/login";
 
 import Sidebar from "./components/Sidebar";
 import PrivateRoute from "./components/PrivateRoute";
+import Actividades from "./pages/Actividades";
 
 function App() {
   const location = useLocation();
@@ -44,10 +45,10 @@ function App() {
           </PrivateRoute>
           } />
           
-          <Route path="/asistencia" 
+          <Route path="/actividades" 
           element={
           <PrivateRoute>
-            <Asistencia />
+            <Actividades />
           </PrivateRoute>
           } />
 

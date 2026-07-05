@@ -3,6 +3,7 @@ from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.response import Response
 from .models import *
 from .serializers import *
+from .calendario import *
 
 # permisos
 from .permissions import EsDocente, EsEstudiante
@@ -249,3 +250,24 @@ class GradoViewSet(viewsets.ModelViewSet):
 class PeriodoViewSet(viewsets.ModelViewSet):
     queryset = Periodo.objects.all()
     serializer_class = PeriodoSerializer
+
+    @action(detail=False, methods=["get"])
+    def actual(self, request):
+        nombre = obtener_nombre_periodo_actual()
+
+        if nombre is None:
+            return Response(
+                {"detail": "No hay un trimestre activo para la fecha actual (receso o fuera del año lectivo)."},
+                status=404
+            )
+
+        periodo = Periodo.objects.filter(nombre=nombre).first()
+
+        if periodo is None:
+            return Response(
+                {"detail": f"El trimestre '{nombre}' aún no ha sido creado en la base de datos."},
+                status=404
+            )
+
+        serializer = self.get_serializer(periodo)
+        return Response(serializer.data)

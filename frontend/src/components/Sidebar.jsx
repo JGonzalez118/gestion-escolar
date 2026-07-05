@@ -38,7 +38,7 @@ export default function Sidebar() {
                 <NavItem to="/" label="Dashboard" />
                 <NavItem to="/salon" label="Salón" />
                 <NavItem to="/estudiantes" label="Estudiantes" />
-                <NavItem to="/asistencia" label="Actividades" />
+                <NavItem to="/actividades" label="Actividades" />
 
             </CSidebarNav>
 

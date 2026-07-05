@@ -6,6 +6,10 @@ export const getPeriodos = () => {
     return request("/periodos/");
 };
 
+export const getPeriodoActual = () => {
+    return request("/periodos/actual/");
+};
+
 export const crearPeriodos = (data) => {
     return request("/periodos/", {
         method: "POST",

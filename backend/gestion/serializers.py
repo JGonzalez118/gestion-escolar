@@ -30,7 +30,7 @@ class MateriaSerializer(serializers.ModelSerializer):
 class PeriodoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Periodo
-        fields = '__all__'
+        fields = ["id", "nombre"]
 
 class ActividadSerializer(serializers.ModelSerializer):
     class Meta:
