@@ -64,6 +64,9 @@ const CrearActividadForm = ({ materiaId, periodoId }) => {
 
             <div className="row-inputs">
                 <input
+                    min="1"
+                    max="5"
+                    step="0.1"
                     type="number"
                     placeholder="Puntaje"
                     name="puntaje"

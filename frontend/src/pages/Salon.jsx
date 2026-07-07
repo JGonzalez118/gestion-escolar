@@ -10,6 +10,7 @@ import "../styles/salon.css";
 
 const Salon = () => {
     const [asistencias, setAsistencias] = useState([]);
+    const [materias, setMaterias] = useState([]);
     const [materiaActual, setMateriaActual] = useState(null);
     const [periodoActual, setPeriodoActual] = useState(null);
 
@@ -22,7 +23,8 @@ const Salon = () => {
             const asistenciaData = await getAsistencias();
             const materiasData = await getMaterias();
             setAsistencias(asistenciaData);
-            setMateriaActual(materiasData[0]);
+            setMaterias(materiasData);
+            setMateriaActual(materiasData[0] ?? null);
         } catch (error) {
             console.error(error);
         }
@@ -34,6 +36,12 @@ const Salon = () => {
             console.error("No se pudo obtener el período actual:", error);
             setPeriodoActual(null);
         }
+    };
+
+    const cambiarMateria = (e) => {
+        const idSeleccionado = Number(e.target.value);
+        const materiaEncontrada = materias.find((m) => m.id === idSeleccionado);
+        setMateriaActual(materiaEncontrada ?? null);
     };
 
     // USUARIO ACTUAL CONECTADO <- SACAMOS EL SALÓN
@@ -62,10 +70,28 @@ const Salon = () => {
                         {anioActual}
                     </div>
                 </header>
+
+                <div className="materia-selector">
+                    <label htmlFor="materia-select">Materia actual:</label>
+                    <select
+                        id="materia-select"
+                        value={materiaActual?.id ?? ""}
+                        onChange={cambiarMateria}
+                    >
+                        {materias.map((materia) => (
+                            <option key={materia.id} value={materia.id}>
+                                {materia.nombre}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
                 <section className="salon-grid">
                     <div className="left-column">
-                        {/* <AsistenciaCard asistencias={asistencias} /> */}
-                        <AsistenciaCard materiaId={materiaActual?.id} />
+                        <AsistenciaCard
+                            key={materiaActual?.id}
+                            materiaId={materiaActual?.id}
+                        />
                     </div>
                     <div className="right-column">
                         <ClaseActualCard materia={materiaActual} />

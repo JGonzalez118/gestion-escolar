@@ -11,6 +11,14 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.header-fecha {
+    color: var(--secondary);
+    font-size: 14px;
+    text-transform: capitalize;
 }
 
 .actividades-header .header-title {

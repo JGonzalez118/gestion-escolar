@@ -49,8 +49,6 @@ class Estudiante(models.Model):
 
 class Materia(models.Model):
     nombre = models.CharField(max_length=100)
-    # ! referencia al docente que da la materia
-    docente = models.ForeignKey(Docente, on_delete=models.CASCADE)
     # ! referencia al grado al que pertenece la materia
     grado = models.ForeignKey(Grado, on_delete=models.CASCADE)
 
@@ -79,6 +77,9 @@ class Nota(models.Model):
     estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
     actividad = models.ForeignKey(Actividad, on_delete=models.CASCADE)
     nota = models.FloatField()
+
+    class Meta:
+        unique_together = ('estudiante', 'actividad')
 
 # ** Modelo para la toma de asistencia
 

@@ -53,13 +53,13 @@ def perfil(request):
                 "apellido": docente.apellido,
                 "cedula": docente.cedula,
                 "telefono": docente.telefono
-            },
+                    },
 
             "salon": {
                 "id": salon.id if salon else None,
                 "nombre": salon.nombre if salon else None,
                 "grado": salon.grado.nombre if salon else None
-            }
+                    }
         })
 
     # ESTUDIANTE
@@ -87,13 +87,13 @@ def perfil(request):
                 "apellido": estudiante.apellido,
                 "cedula": estudiante.cedula,
                 "genero": estudiante.genero
-            },
+                    },
 
             "salon": {
                 "id": estudiante.salon.id,
                 "nombre": estudiante.salon.nombre,
                 "grado": estudiante.salon.grado.nombre
-            }
+                    }
         })
 
     return Response({
@@ -191,7 +191,7 @@ class SalonViewSet(viewsets.ModelViewSet):
         )
 
         salon = Salon.objects.get(
-            consejero=request.docente
+            consejero=docente
         )
 
         serializer = self.get_serializer(salon)
@@ -203,10 +203,100 @@ class MateriaViewSet(viewsets.ModelViewSet):
     queryset = Materia.objects.all()
     serializer_class = MateriaSerializer
 
+    def get_queryset(self):
+
+        user = self.request.user
+
+        # ADMIN
+        if user.is_superuser:
+            return Materia.objects.all()
+
+        # DOCENTE
+        if user.groups.filter(name="Docente").exists():
+
+            docente = Docente.objects.get(
+                user=user
+            )
+
+            salon = Salon.objects.filter(
+                consejero=docente
+            ).first()
+
+            if not salon:
+                return Materia.objects.none()
+
+            return Materia.objects.filter(
+                grado=salon.grado
+            )
+
+        # ESTUDIANTE
+        if user.groups.filter(name="Estudiante").exists():
+
+            estudiante = Estudiante.objects.get(
+                user=user
+            )
+
+            return Materia.objects.filter(
+                grado=estudiante.salon.grado
+            )
+
+        return Materia.objects.none()
+
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [EsDocente()]
+
+        return [IsAuthenticated()]
+
 
 class ActividadViewSet(viewsets.ModelViewSet):
     queryset = Actividad.objects.all()
     serializer_class = ActividadSerializer
+
+    def get_queryset(self):
+
+        user = self.request.user
+
+        # ADMIN
+        if user.is_superuser:
+            return Actividad.objects.all()
+
+        # DOCENTE
+        if user.groups.filter(name="Docente").exists():
+
+            docente = Docente.objects.get(
+                user=user
+            )
+
+            salon = Salon.objects.filter(
+                consejero=docente
+            ).first()
+
+            if not salon:
+                return Actividad.objects.none()
+
+            return Actividad.objects.filter(
+                materia__grado=salon.grado
+            )
+
+        # ESTUDIANTE
+        if user.groups.filter(name="Estudiante").exists():
+
+            estudiante = Estudiante.objects.get(
+                user=user
+            )
+
+            return Actividad.objects.filter(
+                materia__grado=estudiante.salon.grado
+            )
+
+        return Actividad.objects.none()
+
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [EsDocente()]
+
+        return [IsAuthenticated()]
 
 
 class NotaViewSet(viewsets.ModelViewSet):
@@ -216,8 +306,17 @@ class NotaViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
 
-        if user.groups.filter(name="Docente").exists():
+        if user.is_superuser:
             return Nota.objects.all()
+
+        if user.groups.filter(name="Docente").exists():
+            docente = Docente.objects.get(user=user)
+            salon = Salon.objects.filter(consejero=docente).first()
+
+            if not salon:
+                return Nota.objects.none()
+
+            return Nota.objects.filter(estudiante__salon=salon)
 
         if user.groups.filter(name="Estudiante").exists():
             return Nota.objects.filter(estudiante__user=user)
@@ -225,10 +324,25 @@ class NotaViewSet(viewsets.ModelViewSet):
         return Nota.objects.none()
 
     def get_permissions(self):
-        if self.action in ['create', 'update', 'destroy']:
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
             return [EsDocente()]
 
         return [IsAuthenticated()]
+
+    def create(self, request, *args, **kwargs):
+        estudiante_id = request.data.get("estudiante")
+        actividad_id = request.data.get("actividad")
+        nota_valor = request.data.get("nota")
+
+        nota, creada = Nota.objects.update_or_create(
+            estudiante_id=estudiante_id,
+            actividad_id=actividad_id,
+            defaults={"nota": nota_valor},
+        )
+
+        serializer = self.get_serializer(nota)
+        status_code = 201 if creada else 200
+        return Response(serializer.data, status=status_code)
 
     # # ? Calcular el promedio
     # @action(detail=False, methods=['get'])

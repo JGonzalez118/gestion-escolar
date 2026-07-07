@@ -58,7 +58,7 @@ export default function Dashboard() {
                         actividadesDeHoy.slice(0, 6).map((act, i) => (
                             <div key={act.id ?? i} style={styles.item}>
                                 <span>{act.nombre || "Actividad"}</span>
-                                <span>Puntaje: {act.puntaje || 100}</span>
+                                <span>Puntaje: {act.puntaje || 5}</span>
                             </div>
                         ))
                     )}

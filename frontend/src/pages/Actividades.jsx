@@ -1,21 +1,27 @@
 import { useEffect, useState } from "react";
 import { getActividades } from "../api/actividades";
+import { getMaterias } from "../api/materias";
 import "../styles/actividades.css";
 
 export default function Actividades() {
     const [actividades, setActividades] = useState([]);
+    const [materias, setMaterias] = useState([]);
     const [cargando, setCargando] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        cargarActividades();
+        cargarDatos();
     }, []);
 
-    const cargarActividades = async () => {
+    const cargarDatos = async () => {
         try {
             setCargando(true);
-            const data = await getActividades();
-            setActividades(data);
+            const [actividadesData, materiasData] = await Promise.all([
+                getActividades(),
+                getMaterias(),
+            ]);
+            setActividades(actividadesData);
+            setMaterias(materiasData);
         } catch (err) {
             console.error(err);
             setError("No se pudo cargar la lista de actividades.");
@@ -24,17 +30,41 @@ export default function Actividades() {
         }
     };
 
-    const hoy = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+    const obtenerFechaLocal = () => {
+        const hoy = new Date();
+        const anio = hoy.getFullYear();
+        const mes = String(hoy.getMonth() + 1).padStart(2, "0");
+        const dia = String(hoy.getDate()).padStart(2, "0");
+        return `${anio}-${mes}-${dia}`;
+    };
 
+    const hoy = obtenerFechaLocal();
     const actividadesDeHoy = actividades.filter((act) => act.fecha === hoy);
 
+    const formatearFechaLegible = () => {
+        const hoyDate = new Date();
+        return hoyDate.toLocaleDateString("es-PA", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+        });
+    };
+
     const renderMateria = (act) => {
-        // Si el backend devuelve la materia anidada (objeto), muestra el nombre.
-        // Si solo devuelve el id (FK plano), muestra el id como respaldo.
+        // Si el backend ya devuelve la materia anidada (objeto), usa el nombre directo.
         if (act.materia && typeof act.materia === "object") {
             return act.materia.nombre;
         }
-        return act.materia_nombre ?? act.materia ?? "—";
+
+        // Si solo devuelve el id (FK plano), busca el nombre en la lista de materias.
+        const materiaEncontrada = materias.find((m) => m.id === act.materia);
+        return materiaEncontrada?.nombre ?? "—";
+    };
+
+    const renderPuntaje = (act) => {
+        const puntaje = Number(act.puntaje);
+        return Number.isFinite(puntaje) ? puntaje : "—";
     };
 
     return (
@@ -43,6 +73,9 @@ export default function Actividades() {
                 <div className="header-title">
                     <div className="header-bar"></div>
                     <h1>Actividades del día</h1>
+                </div>
+                <div className="header-fecha">
+                    {formatearFechaLegible()}
                 </div>
             </header>
 
@@ -73,7 +106,7 @@ export default function Actividades() {
                                         <td>
                                             <span className="tipo-badge">{act.tipo || "—"}</span>
                                         </td>
-                                        <td>{act.puntaje}</td>
+                                        <td>{renderPuntaje(act)}</td>
                                         <td className="descripcion-cell">
                                             {act.descripcion || "—"}
                                         </td>
