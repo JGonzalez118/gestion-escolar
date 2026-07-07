@@ -11,6 +11,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
 .estudiantes-header .header-title {
@@ -99,4 +101,22 @@
     color: var(--secondary);
     background: var(--social-bg);
     border: 1px solid var(--border);
+}
+
+.header-fecha {
+    color: var(--secondary);
+    font-size: 14px;
+    text-transform: capitalize;
+}
+
+.estado-excusa {
+    color: var(--secondary);
+    background: var(--social-bg);
+    border: 1px solid var(--border);
+}
+
+.estado-sin-registrar {
+    color: var(--secondary);
+    background: var(--code-bg);
+    border: 1px dashed var(--border);
 }

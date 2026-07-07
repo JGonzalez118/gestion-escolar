@@ -241,6 +241,23 @@ class AsistenciaViewSet(viewsets.ModelViewSet):
     queryset = Asistencia.objects.all()
     serializer_class = AsistenciaSerializer
 
+    def create(self, request, *args, **kwargs):
+        estudiante_id = request.data.get("estudiante")
+        materia_id = request.data.get("materia")
+        fecha = request.data.get("fecha")
+        estado = request.data.get("estado")
+
+        asistencia, creada = Asistencia.objects.update_or_create(
+            estudiante_id=estudiante_id,
+            materia_id=materia_id,
+            fecha=fecha,
+            defaults={"estado": estado},
+        )
+
+        serializer = self.get_serializer(asistencia)
+        status_code = 201 if creada else 200
+        return Response(serializer.data, status=status_code)
+
 
 class GradoViewSet(viewsets.ModelViewSet):
     queryset = Grado.objects.all()

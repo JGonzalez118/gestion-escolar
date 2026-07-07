@@ -64,7 +64,8 @@ const Salon = () => {
                 </header>
                 <section className="salon-grid">
                     <div className="left-column">
-                        <AsistenciaCard asistencias={asistencias} />
+                        {/* <AsistenciaCard asistencias={asistencias} /> */}
+                        <AsistenciaCard materiaId={materiaActual?.id} />
                     </div>
                     <div className="right-column">
                         <ClaseActualCard materia={materiaActual} />
