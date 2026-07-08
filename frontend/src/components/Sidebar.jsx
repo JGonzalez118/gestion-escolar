@@ -39,6 +39,7 @@ export default function Sidebar() {
                 <NavItem to="/salon" label="Salón" />
                 <NavItem to="/estudiantes" label="Estudiantes" />
                 <NavItem to="/actividades" label="Actividades" />
+                <NavItem to="/boletin" label="Boletin escolar" />
 
             </CSidebarNav>
 

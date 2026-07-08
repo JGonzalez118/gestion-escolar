@@ -1,0 +1,116 @@
+.boletin-layout {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 24px;
+    gap: 16px;
+}
+
+.boletin-header {
+    display: flex;
+    align-items: center;
+}
+
+.boletin-header .header-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.boletin-header .header-bar {
+    width: 6px;
+    height: 32px;
+    border-radius: 4px;
+    background: var(--accent);
+}
+
+.boletin-content {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 16px;
+    text-align: left;
+}
+
+.boletin-tabla-wrapper {
+    overflow-x: auto;
+}
+
+.boletin-tabla {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.boletin-tabla th,
+.boletin-tabla td {
+    padding: 10px 14px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    white-space: nowrap;
+}
+
+.boletin-tabla th:nth-child(1),
+.boletin-tabla th:nth-child(2),
+.boletin-tabla td:nth-child(1),
+.boletin-tabla td:nth-child(2) {
+    text-align: left;
+}
+
+.boletin-tabla th {
+    color: var(--text-h);
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.boletin-tabla tbody tr:hover {
+    background: var(--accent-bg);
+}
+
+.col-promedio-final {
+    font-weight: 600;
+    background: var(--accent-bg);
+}
+
+.nota-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.nota-aprobada {
+    color: #2e7d32;
+    background: rgba(76, 175, 80, 0.15);
+    border: 1px solid rgba(76, 175, 80, 0.35);
+}
+
+.nota-reprobada {
+    color: var(--danger);
+    background: rgba(254, 95, 85, 0.1);
+    border: 1px solid rgba(254, 95, 85, 0.3);
+}
+
+.nota-sin-registrar {
+    color: var(--secondary);
+    background: var(--code-bg);
+    border: 1px dashed var(--border);
+}
+
+.estado-mensaje {
+    text-align: center;
+    color: var(--text);
+    padding: 32px 0;
+}
+
+.estado-mensaje.error {
+    color: var(--danger);
+}

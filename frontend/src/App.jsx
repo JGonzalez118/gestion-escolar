@@ -10,6 +10,7 @@ import Login from "./pages/login";
 import Sidebar from "./components/Sidebar";
 import PrivateRoute from "./components/PrivateRoute";
 import Actividades from "./pages/Actividades";
+import Boletin from "./pages/Boletin";
 
 function App() {
   const location = useLocation();
@@ -31,34 +32,34 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
 
-          <Route path="/" 
-          element={
-            <PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>
-          } />
+          <Route path="/"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            } />
 
-          <Route path="/estudiantes" 
-          element={
-          <PrivateRoute>
-            <Estudiantes />
-          </PrivateRoute>
-          } />
-          
-          <Route path="/actividades" 
-          element={
-          <PrivateRoute>
-            <Actividades />
-          </PrivateRoute>
-          } />
+          <Route path="/estudiantes"
+            element={
+              <PrivateRoute>
+                <Estudiantes />
+              </PrivateRoute>
+            } />
+
+          <Route path="/actividades"
+            element={
+              <PrivateRoute>
+                <Actividades />
+              </PrivateRoute>
+            } />
 
           <Route path="/salon"
-          element={
-          <PrivateRoute>
-            <Salon />
-          </PrivateRoute>
-          } />
-          
+            element={
+              <PrivateRoute>
+                <Salon />
+              </PrivateRoute>
+            } />
+
           <Route
             path="/grados"
             element={
@@ -67,6 +68,16 @@ function App() {
               </PrivateRoute>
             }
           />
+
+          <Route
+            path="/boletin"
+            element={
+              <PrivateRoute role="docente">
+                <Boletin />
+              </PrivateRoute>
+            }
+          />
+
         </Routes>
       </div>
     </div>

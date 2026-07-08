@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.response import Response
+from django.db.models import Avg
 from .models import *
 from .serializers import *
 from .calendario import *
@@ -53,13 +54,13 @@ def perfil(request):
                 "apellido": docente.apellido,
                 "cedula": docente.cedula,
                 "telefono": docente.telefono
-                    },
+                },
 
             "salon": {
                 "id": salon.id if salon else None,
                 "nombre": salon.nombre if salon else None,
                 "grado": salon.grado.nombre if salon else None
-                    }
+                }
         })
 
     # ESTUDIANTE
@@ -87,13 +88,13 @@ def perfil(request):
                 "apellido": estudiante.apellido,
                 "cedula": estudiante.cedula,
                 "genero": estudiante.genero
-                    },
+                },
 
             "salon": {
                 "id": estudiante.salon.id,
                 "nombre": estudiante.salon.nombre,
                 "grado": estudiante.salon.grado.nombre
-                    }
+                }
         })
 
     return Response({
@@ -362,6 +363,87 @@ class NotaViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(nota)
         status_code = 201 if creada else 200
         return Response(serializer.data, status=status_code)
+
+    @action(detail=False, methods=['get'])
+    def boletin(self, request):
+        periodo_id = request.query_params.get('periodo')
+
+        if not periodo_id:
+            return Response({"detail": "Debe especificar un periodo."}, status=400)
+
+        user = request.user
+
+        # Determina estudiantes y materias visibles según el rol, mismo patrón que en otras vistas
+        if user.is_superuser:
+            estudiantes_qs = Estudiante.objects.filter(activo=True)
+            materias_qs = Materia.objects.all()
+
+        elif user.groups.filter(name="Docente").exists():
+            docente = Docente.objects.get(user=user)
+            salon = Salon.objects.filter(consejero=docente).first()
+
+            if not salon:
+                return Response([])
+
+            estudiantes_qs = Estudiante.objects.filter(
+                salon=salon, activo=True)
+            materias_qs = Materia.objects.filter(grado=salon.grado)
+
+        elif user.groups.filter(name="Estudiante").exists():
+            estudiante = Estudiante.objects.get(user=user)
+            estudiantes_qs = Estudiante.objects.filter(id=estudiante.id)
+            materias_qs = Materia.objects.filter(grado=estudiante.salon.grado)
+
+        else:
+            return Response([])
+
+        materias_list = list(materias_qs.order_by(
+            'nombre').values('id', 'nombre'))
+
+        notas_agrupadas = (
+            Nota.objects.filter(
+                actividad__periodo_id=periodo_id,
+                estudiante__in=estudiantes_qs,
+            )
+            .values('estudiante_id', 'actividad__materia_id')
+            .annotate(promedio=Avg('nota'))
+        )
+
+        mapa_promedios = {
+            (row['estudiante_id'], row['actividad__materia_id']): round(row['promedio'], 2)
+            for row in notas_agrupadas
+        }
+
+        resultado = []
+
+        for est in estudiantes_qs.order_by('apellido', 'nombre'):
+            materias_data = []
+            promedios_validos = []
+
+            for materia in materias_list:
+                promedio = mapa_promedios.get((est.id, materia['id']))
+                materias_data.append({
+                    "materia_id": materia['id'],
+                    "materia_nombre": materia['nombre'],
+                    "promedio": promedio,
+                })
+                if promedio is not None:
+                    promedios_validos.append(promedio)
+
+            promedio_final = (
+                round(sum(promedios_validos) / len(promedios_validos), 2)
+                if promedios_validos else None
+            )
+
+            resultado.append({
+                "estudiante_id": est.id,
+                "nombre": est.nombre,
+                "apellido": est.apellido,
+                "materias": materias_data,
+                "promedio_final": promedio_final,
+            })
+
+        return Response(resultado)
 
 
 class AsistenciaViewSet(viewsets.ModelViewSet):
