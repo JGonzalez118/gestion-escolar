@@ -63,7 +63,7 @@ export default function Actividades() {
     };
 
     const renderPuntaje = (act) => {
-        const puntaje = Number(act.puntaje);
+        const puntaje = Number(act.puntaje_maximo);
         return Number.isFinite(puntaje) ? puntaje : "—";
     };
 

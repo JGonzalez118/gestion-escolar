@@ -62,8 +62,18 @@ class Periodo(models.Model):
 
 
 class Actividad(models.Model):
+    TIPOS = [
+        ('tarea', 'Tarea'),
+        ('ejercicio', 'Ejercicio'),
+        ('taller', 'Taller'),
+        ('examen', 'Examen'),
+    ]
+
     nombre = models.CharField(max_length=100)
     fecha = models.DateField()
+    tipo = models.CharField(max_length=20, choices=TIPOS, default='tarea')
+    puntaje_maximo = models.FloatField(default=100)
+    descripcion = models.TextField(blank=True, default="")
 
     #! referencia a la materia de la actividad y el trimestre en que se realiza
     materia = models.ForeignKey(Materia, on_delete=models.CASCADE)
@@ -76,7 +86,9 @@ class Nota(models.Model):
     #! referencia al estudiante y la actividad realizada
     estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
     actividad = models.ForeignKey(Actividad, on_delete=models.CASCADE)
-    nota = models.FloatField()
+
+    puntos_obtenidos = models.FloatField()
+    nota = models.FloatField()  # calculo: (puntos_obtenidos / puntaje_maximo) * 5
 
     class Meta:
         unique_together = ('estudiante', 'actividad')

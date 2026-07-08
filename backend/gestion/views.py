@@ -332,23 +332,36 @@ class NotaViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         estudiante_id = request.data.get("estudiante")
         actividad_id = request.data.get("actividad")
-        nota_valor = request.data.get("nota")
+        puntos = request.data.get("puntos_obtenidos")
+
+        try:
+            actividad = Actividad.objects.get(id=actividad_id)
+        except Actividad.DoesNotExist:
+            return Response({"detail": "Actividad no encontrada."}, status=404)
+
+        try:
+            puntos = float(puntos)
+        except (TypeError, ValueError):
+            return Response({"detail": "puntos_obtenidos debe ser un número."}, status=400)
+
+        if actividad.puntaje_maximo <= 0:
+            return Response({"detail": "La actividad no tiene un puntaje máximo válido."}, status=400)
+
+        nota_calculada = (puntos / actividad.puntaje_maximo) * 5
+        nota_calculada = round(max(0, min(5, nota_calculada)), 1)
 
         nota, creada = Nota.objects.update_or_create(
             estudiante_id=estudiante_id,
             actividad_id=actividad_id,
-            defaults={"nota": nota_valor},
+            defaults={
+                "puntos_obtenidos": puntos,
+                "nota": nota_calculada,
+            },
         )
 
         serializer = self.get_serializer(nota)
         status_code = 201 if creada else 200
         return Response(serializer.data, status=status_code)
-
-    # # ? Calcular el promedio
-    # @action(detail=False, methods=['get'])
-    # def promedio(self, request):
-    #     promedio = Nota.objects.aaggregate(avg=models.Avg('nota'))
-    #     return Response(promedio)
 
 
 class AsistenciaViewSet(viewsets.ModelViewSet):

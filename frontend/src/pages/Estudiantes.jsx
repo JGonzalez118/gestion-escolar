@@ -74,12 +74,12 @@ export default function Estudiantes() {
             setMateriaSeleccionada(materiasData[0] ?? null);
             setActividades(actividadesData);
 
-            // Prellenar el editor con las notas ya guardadas anteriormente
+            // Prellenar el editor con los puntos ya guardados anteriormente
             const inicial = {};
             notasData.forEach((n) => {
                 const estudianteId = obtenerId(n.estudiante);
                 const actividadId = obtenerId(n.actividad);
-                inicial[`${actividadId}-${estudianteId}`] = n.nota;
+                inicial[`${actividadId}-${estudianteId}`] = n.puntos_obtenidos;
             });
             setNotasEnEdicion(inicial);
         } catch (err) {
@@ -89,6 +89,8 @@ export default function Estudiantes() {
             setCargando(false);
         }
     };
+
+    // ---------- ASISTENCIA ----------
 
     const cambiarMateria = (e) => {
         const idSeleccionado = Number(e.target.value);
@@ -115,15 +117,7 @@ export default function Estudiantes() {
         );
     };
 
-    const formatearFechaLegible = () => {
-        const hoyDate = new Date();
-        return hoyDate.toLocaleDateString("es-PA", {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-        });
-    };
+    // ---------- CALIFICAR ----------
 
     const actividadesDeHoy = actividades.filter((act) => act.fecha === hoy);
 
@@ -135,11 +129,18 @@ export default function Estudiantes() {
         return materiaEncontrada?.nombre ?? "—";
     };
 
-    const cambiarNota = (actividadId, estudianteId, valor) => {
+    const cambiarPuntos = (actividadId, estudianteId, valor) => {
         setNotasEnEdicion((prev) => ({
             ...prev,
             [`${actividadId}-${estudianteId}`]: valor,
         }));
+    };
+
+    const calcularNotaPreview = (puntos, puntajeMaximo) => {
+        const p = Number(puntos);
+        if (!Number.isFinite(p) || !puntajeMaximo) return "—";
+        const nota = Math.max(0, Math.min(5, (p / puntajeMaximo) * 5));
+        return nota.toFixed(1);
     };
 
     const guardarNotasDeActividad = async (actividad) => {
@@ -155,7 +156,7 @@ export default function Estudiantes() {
                 await crearNota({
                     estudiante: estudiante.id,
                     actividad: actividad.id,
-                    nota: Number(valor),
+                    puntos_obtenidos: Number(valor),
                 });
             }
 
@@ -166,6 +167,18 @@ export default function Estudiantes() {
         } finally {
             setGuardandoActividadId(null);
         }
+    };
+
+    // ---------- HELPERS DE UI ----------
+
+    const formatearFechaLegible = () => {
+        const hoyDate = new Date();
+        return hoyDate.toLocaleDateString("es-PA", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+        });
     };
 
     return (
@@ -254,7 +267,7 @@ export default function Estudiantes() {
                                     <h3>{actividad.nombre}</h3>
                                     <span className="tipo-badge">{nombreMateria(actividad)}</span>
                                     <span className="puntaje-max">
-                                        Puntaje máximo: {actividad.puntaje}
+                                        Puntaje máximo: {actividad.puntaje_maximo}
                                     </span>
                                 </div>
 
@@ -264,12 +277,14 @@ export default function Estudiantes() {
                                             <tr>
                                                 <th>Nombre</th>
                                                 <th>Apellido</th>
-                                                <th>Nota</th>
+                                                <th>Puntos obtenidos</th>
+                                                <th>Nota (1-5)</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {estudiantes.map((est) => {
                                                 const clave = `${actividad.id}-${est.id}`;
+                                                const valor = notasEnEdicion[clave] ?? "";
                                                 return (
                                                     <tr key={est.id}>
                                                         <td>{est.nombre}</td>
@@ -277,15 +292,18 @@ export default function Estudiantes() {
                                                         <td>
                                                             <input
                                                                 type="number"
-                                                                min="1"
-                                                                max={actividad.puntaje}
-                                                                step="0.1"
+                                                                min="0"
+                                                                max={actividad.puntaje_maximo}
+                                                                step="0.5"
                                                                 className="nota-input"
-                                                                value={notasEnEdicion[clave] ?? ""}
+                                                                value={valor}
                                                                 onChange={(e) =>
-                                                                    cambiarNota(actividad.id, est.id, e.target.value)
+                                                                    cambiarPuntos(actividad.id, est.id, e.target.value)
                                                                 }
                                                             />
+                                                        </td>
+                                                        <td>
+                                                            {calcularNotaPreview(valor, actividad.puntaje_maximo)}
                                                         </td>
                                                     </tr>
                                                 );
