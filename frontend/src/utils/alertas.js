@@ -29,6 +29,18 @@ export const alertaError = (titulo, texto = "") =>
 export const alertaInfo = (titulo, texto = "") =>
     fire({ icon: "info", title: titulo, text: texto });
 
+// Aviso discreto en una esquina; para acciones que se guardan al instante.
+export const toastExito = (titulo) =>
+    fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: titulo,
+        showConfirmButton: false,
+        timer: 1800,
+        timerProgressBar: true,
+    });
+
 // Devuelve el resultado de SweetAlert2; usar `result.isConfirmed`.
 export const alertaConfirmar = ({
     titulo,

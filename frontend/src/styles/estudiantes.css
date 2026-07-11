@@ -1,182 +1,429 @@
-.estudiantes-layout {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 24px;
-    gap: 16px;
-}
+/* =====================================================
+   ESTUDIANTES · Asistencia del día y calificación
+   Coherente con login/sidebar/dashboard/salón:
+   Bricolage Grotesque (display) + Hanken Grotesk
+   (cuerpo), paleta papel/tinta.
+   ===================================================== */
 
-.estudiantes-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 8px;
-}
+.estudiantes {
+    /* Variables propias de la sección (no tocan el tema global) */
+    --paper: #f4efe4;
+    --paper-2: #ece5d6;
+    --card: #fbf8f1;
+    --field: #ffffff;
+    --ink: #1a3454;
+    --ink-deep: #122941;
+    --ink-soft: #5a6b80;
+    --line: #e0d8c6;
+    --cream: #f3ece0;
+    --accent: #9c8753;
 
-.estudiantes-header .header-title {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
+    /* Estados de asistencia */
+    --est-p: #2e9e5b;
+    --est-a: #d0492f;
+    --est-t: #d9a406;
+    --est-e: #7a8699;
 
-.estudiantes-header .header-bar {
-    width: 6px;
-    height: 32px;
-    border-radius: 4px;
-    background: var(--accent);
-}
-
-.estudiantes-content {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    padding: 16px;
+    font-family: 'Hanken Grotesk', system-ui, sans-serif;
+    color: var(--ink);
     text-align: left;
 }
 
-.estado-mensaje {
-    text-align: center;
-    color: var(--text);
-    padding: 32px 0;
+[data-theme="dark"] .estudiantes {
+    --paper: #0f1d2e;
+    --paper-2: #16273b;
+    --card: #16263a;
+    --field: #1b2c42;
+    --ink: #e9ddc8;
+    --ink-deep: #0a1623;
+    --ink-soft: #9aaabd;
+    --line: #2a3c52;
+    --cream: #f3ece0;
+    --accent: #c9b079;
+
+    --est-p: #43c07a;
+    --est-a: #f0866a;
+    --est-t: #eec04a;
+    --est-e: #9aaabd;
 }
 
-.estado-mensaje.error {
-    color: var(--danger);
+/* ===================== ENCABEZADO ===================== */
+
+.estudiantes__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 22px 24px;
+    margin-bottom: 18px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
 }
 
-.estudiantes-tabla-wrapper {
+.estudiantes__title {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 26px;
+    letter-spacing: -.02em;
+    color: var(--ink);
+    margin: 0;
+}
+
+.estudiantes__date {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    text-transform: capitalize;
+}
+
+/* ===================== TABS ===================== */
+
+.estudiantes__tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.estudiantes__tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: color .18s, background .18s, border-color .18s;
+}
+
+.estudiantes__tab:hover {
+    color: var(--ink);
+    border-color: var(--accent);
+}
+
+.estudiantes__tab--active {
+    color: var(--cream);
+    background: var(--ink);
+    border-color: var(--ink);
+}
+
+[data-theme="dark"] .estudiantes__tab--active {
+    color: var(--ink-deep);
+    background: var(--cream);
+    border-color: var(--cream);
+}
+
+/* ===================== FILTRO DE MATERIA ===================== */
+
+.estudiantes__filter {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    margin-bottom: 16px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+}
+
+.estudiantes__filter-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+}
+
+.estudiantes__select {
+    padding: 9px 12px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--field);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color .18s, box-shadow .18s;
+}
+
+.estudiantes__select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+/* ===================== PANEL / TABLA ===================== */
+
+.estudiantes__panel {
+    padding: 8px 24px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+}
+
+.estudiantes__table-wrap {
     overflow-x: auto;
 }
 
-.estudiantes-tabla {
+.estudiantes__table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.estudiantes-tabla th,
-.estudiantes-tabla td {
-    padding: 12px 16px;
+.estudiantes__table th,
+.estudiantes__table td {
+    padding: 13px 14px;
     text-align: left;
-    border-bottom: 1px solid var(--border);
-    color: var(--text);
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
+    font-size: 14.5px;
 }
 
-.estudiantes-tabla th {
-    color: var(--text-h);
-    font-weight: 600;
-    font-size: 14px;
+.estudiantes__table th {
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: .04em;
     text-transform: uppercase;
-    letter-spacing: 0.4px;
+    color: var(--ink-soft);
 }
 
-.estudiantes-tabla tbody tr:hover {
-    background: var(--accent-bg);
+.estudiantes__table tbody tr:last-child td {
+    border-bottom: none;
 }
 
-.estado-badge {
+.estudiantes__table tbody tr:hover td {
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+/* ===================== BADGES DE ESTADO ===================== */
+
+.badge-estado {
     display: inline-flex;
     align-items: center;
-    padding: 4px 10px;
+    padding: 4px 12px;
     border-radius: 999px;
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--est, var(--ink-soft));
+    background: color-mix(in srgb, var(--est, var(--ink-soft)) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--est, var(--ink-soft)) 35%, transparent);
 }
 
-.estado-presente {
-    color: var(--primary);
-    background: var(--accent-bg);
-    border: 1px solid var(--accent-border);
+.badge-estado--p { --est: var(--est-p); }
+.badge-estado--a { --est: var(--est-a); }
+.badge-estado--t { --est: var(--est-t); }
+.badge-estado--e { --est: var(--est-e); }
+
+.badge-estado--none {
+    color: var(--ink-soft);
+    background: transparent;
+    border: 1px dashed var(--line);
 }
 
-.estado-ausente {
-    color: var(--danger);
-    background: rgba(254, 95, 85, 0.1);
-    border: 1px solid rgba(254, 95, 85, 0.3);
+/* ---------- Badge desplegable (editable) ---------- */
+
+.estado-select {
+    position: relative;
+    display: inline-block;
 }
 
-.estado-tardanza {
-    color: var(--secondary);
-    background: var(--social-bg);
-    border: 1px solid var(--border);
-}
-
-.header-fecha {
-    color: var(--secondary);
-    font-size: 14px;
-    text-transform: capitalize;
-}
-
-.estado-excusa {
-    color: var(--secondary);
-    background: var(--social-bg);
-    border: 1px solid var(--border);
-}
-
-.estado-sin-registrar {
-    color: var(--secondary);
-    background: var(--code-bg);
-    border: 1px dashed var(--border);
-}
-
-.tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
-}
-
-.tab-btn {
-    padding: 10px 18px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: var(--card-bg);
-    color: var(--text);
+.estado-select__trigger {
+    gap: 6px;
+    font-family: inherit;
     cursor: pointer;
+    transition: filter .15s;
+}
+
+.estado-select__trigger:hover:not(:disabled) {
+    filter: brightness(.94);
+}
+
+.estado-select__trigger:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+.estado-select__menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    z-index: 20;
+    min-width: 168px;
+    margin: 0;
+    padding: 6px;
+    list-style: none;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: 0 12px 28px -10px rgba(18, 41, 65, .28);
+}
+
+[data-theme="dark"] .estado-select__menu {
+    box-shadow: 0 16px 34px -12px rgba(0, 0, 0, .6);
+}
+
+.estado-select__option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 9px 10px;
+    font-family: inherit;
+    font-size: 14px;
     font-weight: 500;
-    transition: background 0.2s, color 0.2s;
+    text-align: left;
+    color: var(--ink);
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background .15s;
 }
 
-.tab-btn.activo {
-    background: var(--accent);
-    color: #fff;
-    border-color: var(--accent);
+.estado-select__option:hover {
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
-.actividad-calificar-bloque {
-    margin-bottom: 28px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--border);
+.estado-select__option[aria-selected="true"] {
+    font-weight: 700;
 }
 
-.actividad-calificar-bloque:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
+.estado-select__dot {
+    width: 10px;
+    height: 10px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    padding: 0;
+    background: var(--est, var(--ink-soft));
+    border: none;
 }
 
-.actividad-calificar-header {
+/* ===================== MENSAJES ===================== */
+
+.estudiantes__message {
+    text-align: center;
+    color: var(--ink-soft);
+    padding: 40px 0;
+    font-size: 14px;
+}
+
+.estudiantes__message--error {
+    color: var(--est-a);
+}
+
+/* ===================== CALIFICAR ===================== */
+
+.calificar__block {
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+}
+
+.calificar__head {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--line);
     flex-wrap: wrap;
 }
 
-.actividad-calificar-header h3 {
+.calificar__name {
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 17px;
+    color: var(--ink);
     margin: 0;
 }
 
-.puntaje-max {
-    color: var(--secondary);
-    font-size: 14px;
+.calificar__materia {
+    padding: 3px 10px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    border-radius: 999px;
+}
+
+.calificar__max {
+    margin-left: auto;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
 }
 
 .nota-input {
-    width: 80px;
-    padding: 6px 8px;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    background: var(--card-bg);
-    color: var(--text);
+    width: 84px;
+    padding: 8px 10px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--field);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    outline: none;
+    transition: border-color .18s, box-shadow .18s;
+}
+
+.nota-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.calificar__nota {
+    font-weight: 700;
+    color: var(--ink);
+}
+
+.estudiantes__save {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 18px;
+    padding: 12px 22px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--cream);
+    background: var(--ink);
+    border: none;
+    border-radius: 11px;
+    cursor: pointer;
+    transition: background .18s, opacity .18s;
+}
+
+[data-theme="dark"] .estudiantes__save {
+    color: var(--ink-deep);
+    background: var(--cream);
+}
+
+.estudiantes__save:hover:not(:disabled) {
+    background: var(--ink-deep);
+}
+
+[data-theme="dark"] .estudiantes__save:hover:not(:disabled) {
+    background: #fff;
+}
+
+.estudiantes__save:disabled {
+    opacity: .5;
+    cursor: not-allowed;
 }

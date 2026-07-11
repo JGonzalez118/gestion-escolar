@@ -1,28 +1,33 @@
 import { useEffect, useState } from "react";
+import { Users, ClipboardCheck, PenLine, CalendarDays } from "lucide-react";
+
 import { getEstudiantes } from "../api/estudiantes";
-import { getAsistencias } from "../api/asistencia";
+import { getAsistencias, registrarAsistencia } from "../api/asistencia";
 import { getMaterias } from "../api/materias";
 import { getActividades } from "../api/actividades";
 import { getNotas, crearNota } from "../api/notas";
+import EstadoAsistenciaSelect from "../components/EstadoAsistenciaSelect";
+import { alertaExito, alertaError, toastExito } from "../utils/alertas";
 import "../styles/estudiantes.css";
 
-const ESTADOS = {
-    P: { label: "Presente", className: "estado-presente" },
-    A: { label: "Ausente", className: "estado-ausente" },
-    T: { label: "Tarde", className: "estado-tardanza" },
-    E: { label: "Excusa", className: "estado-excusa" },
-};
+// Fecha local en formato YYYY-MM-DD (sin desfase por zona horaria).
+function fechaHoy() {
+    const hoy = new Date();
+    const mes = String(hoy.getMonth() + 1).padStart(2, "0");
+    const dia = String(hoy.getDate()).padStart(2, "0");
+    return `${hoy.getFullYear()}-${mes}-${dia}`;
+}
 
-const ESTADO_SIN_REGISTRAR = {
-    label: "Sin registrar",
-    className: "estado-sin-registrar",
-};
+// Devuelve el id, ya venga como objeto anidado o como id plano.
+const obtenerId = (campo) =>
+    campo && typeof campo === "object" ? campo.id : campo;
 
 export default function Estudiantes() {
     const [tab, setTab] = useState("asistencia");
 
     const [estudiantes, setEstudiantes] = useState([]);
-    const [asistenciasTodas, setAsistenciasTodas] = useState([]);
+    // Estados de hoy, indexados por `${materiaId}-${estudianteId}`.
+    const [estadosHoy, setEstadosHoy] = useState({});
     const [materias, setMaterias] = useState([]);
     const [materiaSeleccionada, setMateriaSeleccionada] = useState(null);
 
@@ -33,62 +38,60 @@ export default function Estudiantes() {
     const [cargando, setCargando] = useState(true);
     const [error, setError] = useState(null);
 
+    const hoy = fechaHoy();
+
     useEffect(() => {
+        const cargarDatos = async () => {
+            try {
+                setCargando(true);
+
+                const [
+                    estudiantesData,
+                    asistenciasData,
+                    materiasData,
+                    actividadesData,
+                    notasData,
+                ] = await Promise.all([
+                    getEstudiantes(),
+                    getAsistencias(),
+                    getMaterias(),
+                    getActividades(),
+                    getNotas(),
+                ]);
+
+                setEstudiantes(estudiantesData);
+                setMaterias(materiasData);
+                setMateriaSeleccionada(materiasData[0] ?? null);
+                setActividades(actividadesData);
+
+                // Estados de asistencia ya guardados hoy
+                const estados = {};
+                asistenciasData
+                    .filter((a) => a.fecha === hoy)
+                    .forEach((a) => {
+                        const clave = `${obtenerId(a.materia)}-${obtenerId(a.estudiante)}`;
+                        estados[clave] = a.estado;
+                    });
+                setEstadosHoy(estados);
+
+                // Prellenar el editor con los puntos ya guardados anteriormente
+                const inicial = {};
+                notasData.forEach((n) => {
+                    const estudianteId = obtenerId(n.estudiante);
+                    const actividadId = obtenerId(n.actividad);
+                    inicial[`${actividadId}-${estudianteId}`] = n.puntos_obtenidos;
+                });
+                setNotasEnEdicion(inicial);
+            } catch (err) {
+                console.error(err);
+                setError("No se pudo cargar la información.");
+            } finally {
+                setCargando(false);
+            }
+        };
+
         cargarDatos();
-    }, []);
-
-    const obtenerFechaLocal = () => {
-        const hoy = new Date();
-        const anio = hoy.getFullYear();
-        const mes = String(hoy.getMonth() + 1).padStart(2, "0");
-        const dia = String(hoy.getDate()).padStart(2, "0");
-        return `${anio}-${mes}-${dia}`;
-    };
-
-    const hoy = obtenerFechaLocal();
-
-    const obtenerId = (campo) =>
-        campo && typeof campo === "object" ? campo.id : campo;
-
-    const cargarDatos = async () => {
-        try {
-            setCargando(true);
-
-            const [
-                estudiantesData,
-                asistenciasData,
-                materiasData,
-                actividadesData,
-                notasData,
-            ] = await Promise.all([
-                getEstudiantes(),
-                getAsistencias(),
-                getMaterias(),
-                getActividades(),
-                getNotas(),
-            ]);
-
-            setEstudiantes(estudiantesData);
-            setAsistenciasTodas(asistenciasData);
-            setMaterias(materiasData);
-            setMateriaSeleccionada(materiasData[0] ?? null);
-            setActividades(actividadesData);
-
-            // Prellenar el editor con los puntos ya guardados anteriormente
-            const inicial = {};
-            notasData.forEach((n) => {
-                const estudianteId = obtenerId(n.estudiante);
-                const actividadId = obtenerId(n.actividad);
-                inicial[`${actividadId}-${estudianteId}`] = n.puntos_obtenidos;
-            });
-            setNotasEnEdicion(inicial);
-        } catch (err) {
-            console.error(err);
-            setError("No se pudo cargar la información.");
-        } finally {
-            setCargando(false);
-        }
-    };
+    }, [hoy]);
 
     // ---------- ASISTENCIA ----------
 
@@ -98,23 +101,29 @@ export default function Estudiantes() {
         setMateriaSeleccionada(materiaEncontrada ?? null);
     };
 
-    const renderEstadoAsistencia = (estudiante) => {
-        if (!materiaSeleccionada) return null;
+    // Guarda al instante (el backend hace upsert) con actualización optimista.
+    const cambiarAsistencia = async (estudianteId, estado) => {
+        if (!materiaSeleccionada) return;
 
-        const asistencia = asistenciasTodas.find(
-            (a) =>
-                obtenerId(a.estudiante) === estudiante.id &&
-                obtenerId(a.materia) === materiaSeleccionada.id &&
-                a.fecha === hoy
-        );
+        const clave = `${materiaSeleccionada.id}-${estudianteId}`;
+        const anterior = estadosHoy[clave];
 
-        const estado = asistencia ? ESTADOS[asistencia.estado] : ESTADO_SIN_REGISTRAR;
+        setEstadosHoy((prev) => ({ ...prev, [clave]: estado }));
 
-        return (
-            <span className={`estado-badge ${estado.className}`}>
-                {estado.label}
-            </span>
-        );
+        try {
+            await registrarAsistencia({
+                estudiante: estudianteId,
+                materia: materiaSeleccionada.id,
+                fecha: hoy,
+                estado,
+            });
+            toastExito("Asistencia actualizada");
+        } catch (err) {
+            console.error(err);
+            // Revertir si el guardado falla
+            setEstadosHoy((prev) => ({ ...prev, [clave]: anterior }));
+            alertaError("No se pudo actualizar la asistencia.");
+        }
     };
 
     // ---------- CALIFICAR ----------
@@ -160,62 +169,67 @@ export default function Estudiantes() {
                 });
             }
 
-            alert(`Notas guardadas para "${actividad.nombre}"`);
+            alertaExito("Notas guardadas", `Se registraron las notas de "${actividad.nombre}".`);
         } catch (err) {
             console.error(err);
-            alert("Ocurrió un error al guardar las notas.");
+            alertaError("Ocurrió un error al guardar las notas.");
         } finally {
             setGuardandoActividadId(null);
         }
     };
 
-    // ---------- HELPERS DE UI ----------
+    // ---------- UI ----------
 
-    const formatearFechaLegible = () => {
-        const hoyDate = new Date();
-        return hoyDate.toLocaleDateString("es-PA", {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-        });
-    };
+    const fechaLegible = new Date().toLocaleDateString("es-PA", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    });
 
     return (
-        <div className="estudiantes-layout">
-            <header className="estudiantes-header">
-                <div className="header-title">
-                    <div className="header-bar"></div>
-                    <h1>Estudiantes</h1>
-                </div>
-                <div className="header-fecha">{formatearFechaLegible()}</div>
+        <div className="estudiantes">
+            <header className="estudiantes__header">
+                <h1 className="estudiantes__title">
+                    <Users size={24} />
+                    Estudiantes
+                </h1>
+                <span className="estudiantes__date">
+                    <CalendarDays size={16} />
+                    {fechaLegible}
+                </span>
             </header>
 
-            <div className="tabs">
+            <div className="estudiantes__tabs">
                 <button
-                    className={`tab-btn ${tab === "asistencia" ? "activo" : ""}`}
+                    className={"estudiantes__tab" + (tab === "asistencia" ? " estudiantes__tab--active" : "")}
                     onClick={() => setTab("asistencia")}
                 >
+                    <ClipboardCheck size={17} />
                     Asistencia
                 </button>
                 <button
-                    className={`tab-btn ${tab === "calificar" ? "activo" : ""}`}
+                    className={"estudiantes__tab" + (tab === "calificar" ? " estudiantes__tab--active" : "")}
                     onClick={() => setTab("calificar")}
                 >
+                    <PenLine size={17} />
                     Calificar actividades
                 </button>
             </div>
 
             {cargando ? (
-                <p className="estado-mensaje">Cargando...</p>
+                <p className="estudiantes__message">Cargando…</p>
             ) : error ? (
-                <p className="estado-mensaje error">{error}</p>
+                <p className="estudiantes__message estudiantes__message--error">{error}</p>
             ) : tab === "asistencia" ? (
                 <>
-                    <div className="materia-selector">
-                        <label htmlFor="materia-select">Materia:</label>
+                    <div className="estudiantes__filter">
+                        <label className="estudiantes__filter-label" htmlFor="materia-select">
+                            Materia
+                        </label>
                         <select
                             id="materia-select"
+                            className="estudiantes__select"
                             value={materiaSeleccionada?.id ?? ""}
                             onChange={cambiarMateria}
                         >
@@ -227,12 +241,12 @@ export default function Estudiantes() {
                         </select>
                     </div>
 
-                    <section className="estudiantes-content">
+                    <section className="estudiantes__panel">
                         {estudiantes.length === 0 ? (
-                            <p className="estado-mensaje">No hay estudiantes registrados.</p>
+                            <p className="estudiantes__message">No hay estudiantes registrados.</p>
                         ) : (
-                            <div className="estudiantes-tabla-wrapper">
-                                <table className="estudiantes-tabla">
+                            <div className="estudiantes__table-wrap">
+                                <table className="estudiantes__table">
                                     <thead>
                                         <tr>
                                             <th>Nombre</th>
@@ -245,7 +259,19 @@ export default function Estudiantes() {
                                             <tr key={est.id}>
                                                 <td>{est.nombre}</td>
                                                 <td>{est.apellido}</td>
-                                                <td>{renderEstadoAsistencia(est)}</td>
+                                                <td>
+                                                    <EstadoAsistenciaSelect
+                                                        value={
+                                                            estadosHoy[
+                                                            `${materiaSeleccionada?.id}-${est.id}`
+                                                            ] ?? ""
+                                                        }
+                                                        onChange={(estado) =>
+                                                            cambiarAsistencia(est.id, estado)
+                                                        }
+                                                        disabled={!materiaSeleccionada}
+                                                    />
+                                                </td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -254,77 +280,75 @@ export default function Estudiantes() {
                         )}
                     </section>
                 </>
-            ) : (
-                <section className="estudiantes-content">
-                    {actividadesDeHoy.length === 0 ? (
-                        <p className="estado-mensaje">
-                            No hay actividades registradas para hoy.
-                        </p>
-                    ) : (
-                        actividadesDeHoy.map((actividad) => (
-                            <div className="actividad-calificar-bloque" key={actividad.id}>
-                                <div className="actividad-calificar-header">
-                                    <h3>{actividad.nombre}</h3>
-                                    <span className="tipo-badge">{nombreMateria(actividad)}</span>
-                                    <span className="puntaje-max">
-                                        Puntaje máximo: {actividad.puntaje_maximo}
-                                    </span>
-                                </div>
-
-                                <div className="estudiantes-tabla-wrapper">
-                                    <table className="estudiantes-tabla">
-                                        <thead>
-                                            <tr>
-                                                <th>Nombre</th>
-                                                <th>Apellido</th>
-                                                <th>Puntos obtenidos</th>
-                                                <th>Nota (1-5)</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {estudiantes.map((est) => {
-                                                const clave = `${actividad.id}-${est.id}`;
-                                                const valor = notasEnEdicion[clave] ?? "";
-                                                return (
-                                                    <tr key={est.id}>
-                                                        <td>{est.nombre}</td>
-                                                        <td>{est.apellido}</td>
-                                                        <td>
-                                                            <input
-                                                                type="number"
-                                                                min="0"
-                                                                max={actividad.puntaje_maximo}
-                                                                step="0.5"
-                                                                className="nota-input"
-                                                                value={valor}
-                                                                onChange={(e) =>
-                                                                    cambiarPuntos(actividad.id, est.id, e.target.value)
-                                                                }
-                                                            />
-                                                        </td>
-                                                        <td>
-                                                            {calcularNotaPreview(valor, actividad.puntaje_maximo)}
-                                                        </td>
-                                                    </tr>
-                                                );
-                                            })}
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                <button
-                                    className="primary-btn"
-                                    disabled={guardandoActividadId === actividad.id}
-                                    onClick={() => guardarNotasDeActividad(actividad)}
-                                >
-                                    {guardandoActividadId === actividad.id
-                                        ? "Guardando..."
-                                        : `Guardar notas de "${actividad.nombre}"`}
-                                </button>
-                            </div>
-                        ))
-                    )}
+            ) : actividadesDeHoy.length === 0 ? (
+                <section className="estudiantes__panel">
+                    <p className="estudiantes__message">
+                        No hay actividades registradas para hoy.
+                    </p>
                 </section>
+            ) : (
+                actividadesDeHoy.map((actividad) => (
+                    <div className="calificar__block" key={actividad.id}>
+                        <div className="calificar__head">
+                            <h3 className="calificar__name">{actividad.nombre}</h3>
+                            <span className="calificar__materia">{nombreMateria(actividad)}</span>
+                            <span className="calificar__max">
+                                Puntaje máximo: {actividad.puntaje_maximo}
+                            </span>
+                        </div>
+
+                        <div className="estudiantes__table-wrap">
+                            <table className="estudiantes__table">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Apellido</th>
+                                        <th>Puntos obtenidos</th>
+                                        <th>Nota (0–5)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {estudiantes.map((est) => {
+                                        const clave = `${actividad.id}-${est.id}`;
+                                        const valor = notasEnEdicion[clave] ?? "";
+                                        return (
+                                            <tr key={est.id}>
+                                                <td>{est.nombre}</td>
+                                                <td>{est.apellido}</td>
+                                                <td>
+                                                    <input
+                                                        type="number"
+                                                        min="0"
+                                                        max={actividad.puntaje_maximo}
+                                                        step="0.5"
+                                                        className="nota-input"
+                                                        value={valor}
+                                                        onChange={(e) =>
+                                                            cambiarPuntos(actividad.id, est.id, e.target.value)
+                                                        }
+                                                    />
+                                                </td>
+                                                <td className="calificar__nota">
+                                                    {calcularNotaPreview(valor, actividad.puntaje_maximo)}
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <button
+                            className="estudiantes__save"
+                            disabled={guardandoActividadId === actividad.id}
+                            onClick={() => guardarNotasDeActividad(actividad)}
+                        >
+                            {guardandoActividadId === actividad.id
+                                ? "Guardando…"
+                                : "Guardar notas"}
+                        </button>
+                    </div>
+                ))
             )}
         </div>
     );

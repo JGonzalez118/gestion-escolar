@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { getEstudiantesMiSalon } from "../api/estudiantes";
-import { registrarAsistencia } from "../api/asistencia";
+import { getAsistencias, registrarAsistencia } from "../api/asistencia";
 import { alertaExito, alertaError, alertaConfirmar } from "../utils/alertas";
+
+// Devuelve el id, ya venga como objeto anidado o como id plano.
+const obtenerId = (campo) =>
+    campo && typeof campo === "object" ? campo.id : campo;
 
 // Estados posibles de asistencia; la letra coincide con el valor del backend.
 const ESTADOS = [
@@ -27,17 +31,36 @@ const AsistenciaCard = ({ materiaId }) => {
     useEffect(() => {
         const cargarEstudiantes = async () => {
             try {
-                const data = await getEstudiantesMiSalon();
+                const [data, asistencias] = await Promise.all([
+                    getEstudiantesMiSalon(),
+                    getAsistencias(),
+                ]);
 
-                // Sin estado por defecto: el profesor debe marcar cada uno manualmente.
-                setEstudiantes(data.map((est) => ({ ...est, estado: "" })));
+                // Estados ya guardados hoy para esta materia, para no partir de cero.
+                const guardados = {};
+                asistencias
+                    .filter(
+                        (a) =>
+                            a.fecha === fechaHoy() &&
+                            obtenerId(a.materia) === materiaId
+                    )
+                    .forEach((a) => {
+                        guardados[obtenerId(a.estudiante)] = a.estado;
+                    });
+
+                setEstudiantes(
+                    data.map((est) => ({
+                        ...est,
+                        estado: guardados[est.id] ?? "",
+                    }))
+                );
             } catch (error) {
                 console.error(error);
             }
         };
 
         cargarEstudiantes();
-    }, []);
+    }, [materiaId]);
 
     const cambiarEstado = (id, estado) => {
         setEstudiantes((prev) =>
