@@ -6,7 +6,6 @@ import {
     Users,
     ClipboardList,
     FileText,
-    Layers,
     Sun,
     Moon,
     LogOut,
@@ -24,7 +23,6 @@ const NAV_ITEMS = [
     { to: "/estudiantes", label: "Estudiantes", icon: Users, roles: ["docente"] },
     { to: "/actividades", label: "Actividades", icon: ClipboardList },
     { to: "/boletin", label: "Boletín escolar", icon: FileText, roles: ["docente"] },
-    { to: "/grados", label: "Grados", icon: Layers, roles: ["docente"] },
 ];
 
 const handleLogout = () => {
