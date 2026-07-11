@@ -1,0 +1,102 @@
+.actividades-layout {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 24px;
+    gap: 16px;
+}
+
+.actividades-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.header-fecha {
+    color: var(--secondary);
+    font-size: 14px;
+    text-transform: capitalize;
+}
+
+.actividades-header .header-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.actividades-header .header-bar {
+    width: 6px;
+    height: 32px;
+    border-radius: 4px;
+    background: var(--accent);
+}
+
+.actividades-content {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 16px;
+    text-align: left;
+}
+
+.estado-mensaje {
+    text-align: center;
+    color: var(--text);
+    padding: 32px 0;
+}
+
+.estado-mensaje.error {
+    color: var(--danger);
+}
+
+.actividades-tabla-wrapper {
+    overflow-x: auto;
+}
+
+.actividades-tabla {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.actividades-tabla th,
+.actividades-tabla td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: top;
+}
+
+.actividades-tabla th {
+    color: var(--text-h);
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.actividades-tabla tbody tr:hover {
+    background: var(--accent-bg);
+}
+
+.tipo-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--primary);
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-border);
+}
+
+.descripcion-cell {
+    max-width: 320px;
+    color: var(--secondary);
+    font-size: 14px;
+}

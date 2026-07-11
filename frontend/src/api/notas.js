@@ -13,6 +13,10 @@ export const crearNota = (data) => {
     });
 };
 
+export const getBoletin = (periodoId) => {
+    return request(`/notas/boletin/?periodo=${periodoId}`);
+};
+
 export const actualizarNota = (id, data) => {
     return request(`/notas/${id}/`, {
         method: "PUT",

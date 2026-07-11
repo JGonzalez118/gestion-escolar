@@ -21,13 +21,16 @@ async function request(endpoint, options = {}) {
             headers,
         });
 
-        if (!response.ok) {
-            throw new Error(`Error: ${response.status}`);
-        }
-
         if (response.status === 401) {
             localStorage.removeItem("access");
             window.location.href = "/login";
+            return;
+        }
+
+        if (!response.ok) {
+            const errorBody = await response.json().catch(() => null);
+            console.error("Detalle del error:", errorBody);
+            throw new Error(`Error: ${response.status}`);
         }
 
         return await response.json();

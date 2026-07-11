@@ -1,13 +1,18 @@
 import { useState } from "react";
-
 import { crearActividad } from "../api/actividades";
 
-const CrearActividadForm = () => {
+const TIPOS_ACTIVIDAD = [
+    { value: "tarea", label: "Tarea" },
+    { value: "ejercicio", label: "Ejercicio" },
+    { value: "taller", label: "Taller" },
+    { value: "examen", label: "Examen" },
+];
 
+const CrearActividadForm = ({ materiaId, periodoId }) => {
     const [form, setForm] = useState({
         nombre: "",
-        puntaje: "",
-        tipo: "",
+        puntaje_maximo: "",
+        tipo: "tarea",
         descripcion: "",
     });
 
@@ -21,8 +26,8 @@ const CrearActividadForm = () => {
     const limpiar = () => {
         setForm({
             nombre: "",
-            puntaje: "",
-            tipo: "",
+            puntaje_maximo: "",
+            tipo: "tarea",
             descripcion: "",
         });
     };
@@ -30,13 +35,23 @@ const CrearActividadForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if (!materiaId || !periodoId) {
+            alert("No se pudo determinar la materia o el período actual.");
+            return;
+        }
+
+        const payload = {
+            ...form,
+            puntaje_maximo: Number(form.puntaje_maximo),
+            fecha: new Date().toISOString().split("T")[0], // YYYY-MM-DD
+            materia: materiaId,
+            periodo: periodoId,
+        };
+
         try {
-            await crearActividad(form);
-
+            await crearActividad(payload);
             alert("Actividad creada correctamente");
-
             limpiar();
-
         } catch (error) {
             console.error(error);
         }
@@ -44,9 +59,7 @@ const CrearActividadForm = () => {
 
     return (
         <form className="actividad-form" onSubmit={handleSubmit}>
-
             <h2>Añadir una actividad</h2>
-
             <div className="divider"></div>
 
             <input
@@ -58,23 +71,23 @@ const CrearActividadForm = () => {
             />
 
             <div className="row-inputs">
-
                 <input
+                    min="1"
+                    step="1"
                     type="number"
-                    placeholder="Puntaje"
-                    name="puntaje"
-                    value={form.puntaje}
+                    placeholder="Puntaje máximo"
+                    name="puntaje_maximo"
+                    value={form.puntaje_maximo}
                     onChange={handleChange}
                 />
 
-                <input
-                    type="text"
-                    placeholder="Tipo"
-                    name="tipo"
-                    value={form.tipo}
-                    onChange={handleChange}
-                />
-
+                <select name="tipo" value={form.tipo} onChange={handleChange}>
+                    {TIPOS_ACTIVIDAD.map((t) => (
+                        <option key={t.value} value={t.value}>
+                            {t.label}
+                        </option>
+                    ))}
+                </select>
             </div>
 
             <textarea
@@ -85,22 +98,13 @@ const CrearActividadForm = () => {
             />
 
             <div className="buttons-row">
-                <button
-                    type="button"
-                    className="secondary-btn"
-                    onClick={limpiar}
-                >
+                <button type="button" className="secondary-btn" onClick={limpiar}>
                     Limpiar campos
                 </button>
-
-                <button
-                    type="submit"
-                    className="primary-btn"
-                >
+                <button type="submit" className="primary-btn">
                     Agregar actividad
                 </button>
             </div>
-
         </form>
     );
 };

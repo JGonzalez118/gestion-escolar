@@ -1,0 +1,182 @@
+.estudiantes-layout {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 24px;
+    gap: 16px;
+}
+
+.estudiantes-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.estudiantes-header .header-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.estudiantes-header .header-bar {
+    width: 6px;
+    height: 32px;
+    border-radius: 4px;
+    background: var(--accent);
+}
+
+.estudiantes-content {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 16px;
+    text-align: left;
+}
+
+.estado-mensaje {
+    text-align: center;
+    color: var(--text);
+    padding: 32px 0;
+}
+
+.estado-mensaje.error {
+    color: var(--danger);
+}
+
+.estudiantes-tabla-wrapper {
+    overflow-x: auto;
+}
+
+.estudiantes-tabla {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.estudiantes-tabla th,
+.estudiantes-tabla td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+}
+
+.estudiantes-tabla th {
+    color: var(--text-h);
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.estudiantes-tabla tbody tr:hover {
+    background: var(--accent-bg);
+}
+
+.estado-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.estado-presente {
+    color: var(--primary);
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-border);
+}
+
+.estado-ausente {
+    color: var(--danger);
+    background: rgba(254, 95, 85, 0.1);
+    border: 1px solid rgba(254, 95, 85, 0.3);
+}
+
+.estado-tardanza {
+    color: var(--secondary);
+    background: var(--social-bg);
+    border: 1px solid var(--border);
+}
+
+.header-fecha {
+    color: var(--secondary);
+    font-size: 14px;
+    text-transform: capitalize;
+}
+
+.estado-excusa {
+    color: var(--secondary);
+    background: var(--social-bg);
+    border: 1px solid var(--border);
+}
+
+.estado-sin-registrar {
+    color: var(--secondary);
+    background: var(--code-bg);
+    border: 1px dashed var(--border);
+}
+
+.tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.tab-btn {
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    color: var(--text);
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s, color 0.2s;
+}
+
+.tab-btn.activo {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+}
+
+.actividad-calificar-bloque {
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.actividad-calificar-bloque:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.actividad-calificar-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.actividad-calificar-header h3 {
+    margin: 0;
+}
+
+.puntaje-max {
+    color: var(--secondary);
+    font-size: 14px;
+}
+
+.nota-input {
+    width: 80px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    color: var(--text);
+}

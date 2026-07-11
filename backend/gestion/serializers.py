@@ -7,47 +7,55 @@ class GradoSerializer(serializers.ModelSerializer):
         model = Grado
         fields = '__all__'
 
+
 class DocenteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Docente
         fields = '__all__'
+
 
 class SalonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Salon
         fields = '__all__'
 
+
 class EstudianteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Estudiante
         fields = '__all__'
+
 
 class MateriaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Materia
         fields = '__all__'
 
+
 class PeriodoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Periodo
-        fields = '__all__'
+        fields = ["id", "nombre"]
+
 
 class ActividadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Actividad
-        fields = '__all__'
+        fields = [
+            "id", "nombre", "fecha", "tipo",
+            "puntaje_maximo", "descripcion",
+            "materia", "periodo",
+        ]
+
 
 class NotaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Nota
-        fields = '__all__'
+        fields = ["id", "estudiante", "actividad", "puntos_obtenidos", "nota"]
+        
+        read_only_fields = ["nota"]
 
-    # ? Asegurar que las notas estén dentro del rango
-    def validate_nota(self, value):
-        if value < 1 or value > 5:
-            raise serializers.ValidationError("La calificación debe ser de 1 a 5")
-        return value
-    
+
 class AsistenciaSerializer(serializers.ModelSerializer):
 
     estudiante_nombre = serializers.CharField(
