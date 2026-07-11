@@ -1,91 +1,129 @@
 import React, { useContext } from "react";
-import {
-    CSidebar,
-    CSidebarNav,
-} from "@coreui/react";
-
 import { NavLink } from "react-router-dom";
+import {
+    LayoutDashboard,
+    School,
+    Users,
+    ClipboardList,
+    FileText,
+    Layers,
+    Sun,
+    Moon,
+    LogOut,
+} from "lucide-react";
+
 import { logout } from "../api/auth";
 import { ThemeContext } from "../context/ThemeContext";
+import "../styles/sidebar.css";
+
+// Cada enlace declara los roles que pueden verlo.
+// Si `roles` se omite, el enlace es visible para todos.
+const NAV_ITEMS = [
+    { to: "/", label: "Dashboard", icon: LayoutDashboard },
+    { to: "/salon", label: "Salón", icon: School },
+    { to: "/estudiantes", label: "Estudiantes", icon: Users },
+    { to: "/actividades", label: "Actividades", icon: ClipboardList },
+    { to: "/boletin", label: "Boletín escolar", icon: FileText, roles: ["docente"] },
+    { to: "/grados", label: "Grados", icon: Layers, roles: ["docente"] },
+];
 
 const handleLogout = () => {
     logout();
     window.location.href = "/login";
 };
 
+// Lee el perfil guardado en el login; devuelve null si no hay o está corrupto.
+function leerPerfil() {
+    try {
+        return JSON.parse(localStorage.getItem("perfil")) || null;
+    } catch {
+        return null;
+    }
+}
+
+// Iniciales a partir del nombre completo (máx. 2 letras).
+function iniciales(nombre) {
+    if (!nombre) return "?";
+    return nombre
+        .trim()
+        .split(/\s+/)
+        .slice(0, 2)
+        .map((p) => p[0]?.toUpperCase() ?? "")
+        .join("");
+}
+
 export default function Sidebar() {
 
     const { toggleTheme, theme } = useContext(ThemeContext);
 
+    const perfil = leerPerfil();
+    const rol = perfil?.rol ?? localStorage.getItem("rol");
+
+    const nombre = perfil?.nombre_completo ?? "Usuario";
+    const salon = perfil?.salon?.nombre;
+    const rolLabel = rol === "docente" ? "Docente" : "Estudiante";
+
+    const items = NAV_ITEMS.filter((item) => !item.roles || item.roles.includes(rol));
+
     return (
-        <CSidebar
-            style={{
-                width: "220px",
-                height: "100vh",
-                backgroundColor: "var(--secondary)",
-                color: "white",
-                padding: "20px 10px",
-            }}
-        >
-            {/* LOGO DEFAULT PQ HAY Q PONER ALGO NS */}
-            <div style={{ textAlign: "center", marginBottom: "40px" }}>
-                <h1 style={{ fontSize: "40px" }}>⭐</h1>
+        <aside className="sidebar">
+
+            {/* Marca */}
+            <div className="sidebar__brand">
+                <span className="sidebar__brand-mark">GE</span>
+                <span className="sidebar__brand-text">
+                    Gestión <em>Escolar</em>
+                </span>
             </div>
 
+            {/* Perfil del usuario en sesión */}
+            <div className="sidebar__profile">
+                <span className="sidebar__avatar">{iniciales(nombre)}</span>
+                <span className="sidebar__profile-info">
+                    <span className="sidebar__profile-name">{nombre}</span>
+                    <span className="sidebar__profile-meta">
+                        {rolLabel}{salon ? ` · ${salon}` : ""}
+                    </span>
+                </span>
+            </div>
 
-            <CSidebarNav style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+            {/* Navegación (filtrada por rol) */}
+            <nav className="sidebar__nav">
+                {items.map(({ to, label, icon: Icon }) => (
+                    <NavLink
+                        key={to}
+                        to={to}
+                        end={to === "/"}
+                        className={({ isActive }) =>
+                            "sidebar__link" + (isActive ? " sidebar__link--active" : "")
+                        }
+                    >
+                        <Icon size={18} className="sidebar__link-icon" />
+                        <span>{label}</span>
+                    </NavLink>
+                ))}
+            </nav>
 
-                <NavItem to="/" label="Dashboard" />
-                <NavItem to="/salon" label="Salón" />
-                <NavItem to="/estudiantes" label="Estudiantes" />
-                <NavItem to="/actividades" label="Actividades" />
-                <NavItem to="/boletin" label="Boletin escolar" />
+            {/* Acciones */}
+            <div className="sidebar__footer">
+                <button
+                    type="button"
+                    className="sidebar__action"
+                    onClick={toggleTheme}
+                >
+                    {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
+                    <span>{theme === "light" ? "Modo oscuro" : "Modo claro"}</span>
+                </button>
 
-            </CSidebarNav>
-
-            <button
-                onClick={toggleTheme}
-                style={{
-                    marginTop: "auto",
-                    padding: "10px",
-                    borderRadius: "10px",
-                    border: "none",
-                    cursor: "pointer"
-                }}
-            >
-
-                {
-                    theme === "light"
-                        ? "🌙 Modo oscuro"
-                        : "☀️ Modo claro"
-                }
-
-            </button>
-
-            <button onClick={handleLogout}>
-                Cerrar Sesión
-            </button>
-        </CSidebar>
-    );
-}
-
-
-function NavItem({ to, label }) {
-    return (
-        <NavLink
-            to={to}
-            style={({ isActive }) => ({
-                textDecoration: "none",
-                backgroundColor: isActive ? "#e4e7f2" : "transparent",
-                color: isActive ? "#000" : "white",
-                padding: "12px",
-                borderRadius: "12px",
-                textAlign: "center",
-                fontWeight: "500",
-                transition: "0.2s",
-            })}
-        >
-            {label}
-        </NavLink>
+                <button
+                    type="button"
+                    className="sidebar__action sidebar__action--logout"
+                    onClick={handleLogout}
+                >
+                    <LogOut size={18} />
+                    <span>Cerrar sesión</span>
+                </button>
+            </div>
+        </aside>
     );
 }

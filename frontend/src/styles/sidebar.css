@@ -1,0 +1,235 @@
+/* =====================================================
+   SIDEBAR · Navegación lateral
+   Coherente con el login: Bricolage Grotesque (display)
+   + Hanken Grotesk (cuerpo), paleta papel/tinta.
+   ===================================================== */
+
+.sidebar {
+    /* Variables propias del sidebar (no tocan el tema global) */
+    --paper: #f4efe4;
+    --paper-2: #ece5d6;
+    --card: #fbf8f1;
+    --ink: #1a3454;
+    --ink-deep: #122941;
+    --ink-soft: #5a6b80;
+    --line: #e0d8c6;
+    --cream: #f3ece0;
+    --accent: #9c8753;
+
+    display: flex;
+    flex-direction: column;
+    width: 248px;
+    flex-shrink: 0;
+    height: 100vh;
+    box-sizing: border-box;
+    padding: 24px 16px;
+    text-align: left;
+    font-family: 'Hanken Grotesk', system-ui, sans-serif;
+    color: var(--ink);
+    background:
+        radial-gradient(90% 60% at 50% 0%,
+            var(--paper-2), transparent 60%),
+        var(--paper);
+    border-right: 1px solid var(--line);
+}
+
+[data-theme="dark"] .sidebar {
+    --paper: #0f1d2e;
+    --paper-2: #16273b;
+    --card: #16263a;
+    --ink: #e9ddc8;
+    --ink-deep: #0a1623;
+    --ink-soft: #9aaabd;
+    --line: #2a3c52;
+    --cream: #f3ece0;
+    --accent: #c9b079;
+}
+
+/* ===================== MARCA ===================== */
+
+.sidebar__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 6px 0;
+    margin-bottom: 22px;
+}
+
+.sidebar__brand-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: -.02em;
+    color: var(--cream);
+    background: var(--ink);
+    border-radius: 10px;
+}
+
+[data-theme="dark"] .sidebar__brand-mark {
+    color: var(--ink-deep);
+    background: var(--cream);
+}
+
+.sidebar__brand-text {
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 19px;
+    line-height: 1.05;
+    letter-spacing: -.02em;
+    color: var(--ink);
+}
+
+.sidebar__brand-text em {
+    font-style: normal;
+    color: var(--accent);
+}
+
+/* ===================== PERFIL ===================== */
+
+.sidebar__profile {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 11px 12px;
+    margin-bottom: 20px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+}
+
+.sidebar__avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--cream);
+    background: var(--accent);
+    border-radius: 50%;
+}
+
+.sidebar__profile-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.sidebar__profile-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar__profile-meta {
+    font-size: 12px;
+    color: var(--ink-soft);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ===================== NAVEGACIÓN ===================== */
+
+.sidebar__nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sidebar__link {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 10px 12px;
+    font-size: 14.5px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    text-decoration: none;
+    border-radius: 10px;
+    transition: color .18s, background .18s;
+}
+
+.sidebar__link-icon {
+    flex-shrink: 0;
+    color: currentColor;
+}
+
+.sidebar__link:hover {
+    color: var(--ink);
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.sidebar__link--active {
+    color: var(--cream);
+    background: var(--ink);
+}
+
+[data-theme="dark"] .sidebar__link--active {
+    color: var(--ink-deep);
+    background: var(--cream);
+}
+
+.sidebar__link--active:hover {
+    color: var(--cream);
+    background: var(--ink-deep);
+}
+
+[data-theme="dark"] .sidebar__link--active:hover {
+    color: var(--ink-deep);
+    background: var(--cream);
+}
+
+/* ===================== FOOTER / ACCIONES ===================== */
+
+.sidebar__footer {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+}
+
+.sidebar__action {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 10px 12px;
+    font-family: inherit;
+    font-size: 14.5px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    background: transparent;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: left;
+    transition: color .18s, background .18s;
+}
+
+.sidebar__action:hover {
+    color: var(--ink);
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.sidebar__action--logout:hover {
+    color: #c0492f;
+    background: color-mix(in srgb, #c0492f 10%, transparent);
+}
+
+[data-theme="dark"] .sidebar__action--logout:hover {
+    color: #f0866a;
+    background: color-mix(in srgb, #f0866a 12%, transparent);
+}
