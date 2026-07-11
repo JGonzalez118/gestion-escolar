@@ -1,116 +1,464 @@
-.boletin-layout {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 24px;
-    gap: 16px;
-}
+/* =====================================================
+   BOLETÍN · Calificaciones por trimestre
+   Coherente con el resto del gestor: Bricolage Grotesque
+   (display) + Hanken Grotesk (cuerpo), paleta papel/tinta.
+   Incluye estilos de impresión al final.
+   ===================================================== */
 
-.boletin-header {
-    display: flex;
-    align-items: center;
-}
+.boletin {
+    /* Variables propias de la sección (no tocan el tema global) */
+    --paper: #f4efe4;
+    --paper-2: #ece5d6;
+    --card: #fbf8f1;
+    --field: #ffffff;
+    --ink: #1a3454;
+    --ink-deep: #122941;
+    --ink-soft: #5a6b80;
+    --line: #e0d8c6;
+    --cream: #f3ece0;
+    --accent: #9c8753;
 
-.boletin-header .header-title {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
+    --aprobado: #2e9e5b;
+    --reprobado: #d0492f;
 
-.boletin-header .header-bar {
-    width: 6px;
-    height: 32px;
-    border-radius: 4px;
-    background: var(--accent);
-}
-
-.boletin-content {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    padding: 16px;
+    font-family: 'Hanken Grotesk', system-ui, sans-serif;
+    color: var(--ink);
     text-align: left;
 }
 
-.boletin-tabla-wrapper {
+[data-theme="dark"] .boletin {
+    --paper: #0f1d2e;
+    --paper-2: #16273b;
+    --card: #16263a;
+    --field: #1b2c42;
+    --ink: #e9ddc8;
+    --ink-deep: #0a1623;
+    --ink-soft: #9aaabd;
+    --line: #2a3c52;
+    --cream: #f3ece0;
+    --accent: #c9b079;
+
+    --aprobado: #43c07a;
+    --reprobado: #f0866a;
+}
+
+/* ===================== ENCABEZADO ===================== */
+
+.boletin__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 22px 24px;
+    margin-bottom: 18px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+}
+
+.boletin__title {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 26px;
+    letter-spacing: -.02em;
+    color: var(--ink);
+    margin: 0;
+}
+
+.boletin__print {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--cream);
+    background: var(--ink);
+    border: none;
+    border-radius: 11px;
+    cursor: pointer;
+    transition: background .18s;
+}
+
+[data-theme="dark"] .boletin__print {
+    color: var(--ink-deep);
+    background: var(--cream);
+}
+
+.boletin__print:hover {
+    background: var(--ink-deep);
+}
+
+[data-theme="dark"] .boletin__print:hover {
+    background: #fff;
+}
+
+/* ===================== SELECTOR DE TRIMESTRE ===================== */
+
+.boletin__toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    margin-bottom: 18px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+}
+
+.boletin__toolbar-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+}
+
+.boletin__select {
+    padding: 9px 12px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--field);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color .18s, box-shadow .18s;
+}
+
+.boletin__select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+/* ===================== RESUMEN DEL SALÓN ===================== */
+
+.boletin__summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.boletin__stat {
+    padding: 16px 18px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+}
+
+.boletin__stat-label {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+
+.boletin__stat-value {
+    display: block;
+    margin-top: 4px;
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 1.1;
+    color: var(--valor, var(--ink));
+}
+
+.boletin__stat--aprobados { --valor: var(--aprobado); }
+.boletin__stat--reprobados { --valor: var(--reprobado); }
+
+/* ===================== TABLA ===================== */
+
+/* Sin padding: si no, el fondo de la columna destacada no llega
+   a los bordes y deja franjas del color del panel. */
+.boletin__panel {
+    padding: 0;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.boletin__table-wrap {
     overflow-x: auto;
 }
 
-.boletin-tabla {
+.boletin__table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.boletin-tabla th,
-.boletin-tabla td {
-    padding: 10px 14px;
+.boletin__table th,
+.boletin__table td {
+    padding: 12px 14px;
     text-align: center;
-    border-bottom: 1px solid var(--border);
-    color: var(--text);
     white-space: nowrap;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
+    font-size: 14px;
 }
 
-.boletin-tabla th:nth-child(1),
-.boletin-tabla th:nth-child(2),
-.boletin-tabla td:nth-child(1),
-.boletin-tabla td:nth-child(2) {
-    text-align: left;
-}
-
-.boletin-tabla th {
-    color: var(--text-h);
-    font-weight: 600;
-    font-size: 13px;
+.boletin__table th {
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: .04em;
     text-transform: uppercase;
-    letter-spacing: 0.4px;
+    color: var(--ink-soft);
 }
 
-.boletin-tabla tbody tr:hover {
-    background: var(--accent-bg);
+.boletin__table tbody tr:last-child td {
+    border-bottom: none;
 }
 
-.col-promedio-final {
+/* Columna del estudiante: fija al hacer scroll horizontal */
+.boletin__table th.col-estudiante,
+.boletin__table td.col-estudiante {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    text-align: left;
     font-weight: 600;
-    background: var(--accent-bg);
+    background: var(--card);
+    border-right: 1px solid var(--line);
 }
+
+.boletin__table tbody tr:hover td {
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+/* El hover no debe romper el fondo opaco de la columna fija */
+.boletin__table tbody tr:hover td.col-estudiante {
+    background: color-mix(in srgb, var(--accent) 8%, var(--card));
+}
+
+/* Columna de promedio final: destacada */
+.boletin__table th.col-final,
+.boletin__table td.col-final {
+    background: color-mix(in srgb, var(--accent) 10%, var(--card));
+    font-weight: 700;
+}
+
+/* El hover de la fila no debe borrar el tinte de la columna destacada */
+.boletin__table tbody tr:hover td.col-final {
+    background: color-mix(in srgb, var(--accent) 18%, var(--card));
+}
+
+/* ===================== BADGES DE NOTA ===================== */
 
 .nota-badge {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 40px;
-    padding: 4px 8px;
+    min-width: 46px;
+    padding: 4px 10px;
     border-radius: 999px;
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 700;
+    color: var(--nota, var(--ink-soft));
+    background: color-mix(in srgb, var(--nota, var(--ink-soft)) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--nota, var(--ink-soft)) 35%, transparent);
 }
 
-.nota-aprobada {
-    color: #2e7d32;
-    background: rgba(76, 175, 80, 0.15);
-    border: 1px solid rgba(76, 175, 80, 0.35);
+.nota-badge--aprobada { --nota: var(--aprobado); }
+.nota-badge--reprobada { --nota: var(--reprobado); }
+
+.nota-badge--vacia {
+    color: var(--ink-soft);
+    background: transparent;
+    border: 1px dashed var(--line);
 }
 
-.nota-reprobada {
-    color: var(--danger);
-    background: rgba(254, 95, 85, 0.1);
-    border: 1px solid rgba(254, 95, 85, 0.3);
-}
+/* ===================== MENSAJES ===================== */
 
-.nota-sin-registrar {
-    color: var(--secondary);
-    background: var(--code-bg);
-    border: 1px dashed var(--border);
-}
-
-.estado-mensaje {
+.boletin__message {
+    padding: 40px 0;
     text-align: center;
-    color: var(--text);
-    padding: 32px 0;
+    font-size: 14px;
+    color: var(--ink-soft);
 }
 
-.estado-mensaje.error {
-    color: var(--danger);
+.boletin__message--error {
+    color: var(--reprobado);
+}
+
+/* Encabezado que solo aparece al imprimir */
+.boletin__print-head {
+    display: none;
+}
+
+/* ===================== RESPONSIVE ===================== */
+
+@media (max-width: 900px) {
+    .boletin__summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* =====================================================
+   IMPRESIÓN
+   Deja solo el boletín: sin sidebar, sin controles.
+   El diálogo del navegador permite "Guardar como PDF".
+   ===================================================== */
+
+/* Apaisado: el boletín es ancho (una columna por materia).
+   Margen 0 para que el navegador no dibuje sus encabezados
+   (URL, título, fecha) en el margen de la hoja. */
+@page {
+    size: A4 landscape;
+    margin: 0;
+}
+
+@media print {
+
+    /* Oculta el sidebar solo cuando la página impresa es el boletín */
+    body:has(.boletin) .sidebar {
+        display: none !important;
+    }
+
+    .boletin__no-print {
+        display: none !important;
+    }
+
+    /* Papel blanco y tinta oscura, sin importar el tema activo */
+    .boletin,
+    [data-theme="dark"] .boletin {
+        --card: #ffffff;
+        --line: #cccccc;
+        --ink: #000000;
+        --ink-soft: #444444;
+        --accent: #666666;
+        --aprobado: #1b6b3a;
+        --reprobado: #a3301b;
+
+        /* Compensa el `margin: 0` de @page */
+        padding: 12mm 10mm;
+        color: #000;
+    }
+
+    .boletin__print-head {
+        display: block;
+        margin-bottom: 12px;
+    }
+
+    .boletin__print-title {
+        font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        margin: 0 0 4px;
+    }
+
+    .boletin__print-meta {
+        font-size: 11px;
+        color: #444;
+    }
+
+    /* Resumen más compacto para dejarle la hoja a la tabla */
+    .boletin__summary {
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .boletin__stat {
+        padding: 8px 10px;
+    }
+
+    .boletin__stat-label {
+        font-size: 8px;
+    }
+
+    .boletin__stat-value {
+        font-size: 15px;
+    }
+
+    .boletin__stat {
+        border: 1px solid #ccc;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    /* `overflow: hidden` + esquinas redondeadas recortan los bordes de la
+       tabla al imprimir: en papel el panel no debe recortar nada. */
+    .boletin__panel {
+        padding: 0;
+        border: none;
+        border-radius: 0;
+        overflow: visible;
+        box-shadow: none;
+    }
+
+    .boletin__table-wrap {
+        overflow: visible;
+    }
+
+    /* Reparte el ancho entre las columnas en vez de desbordar la hoja */
+    .boletin__table {
+        table-layout: fixed;
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid #ccc;
+    }
+
+    /* En pantalla la última fila va sin borde inferior (para que encaje en el
+       panel redondeado). En papel sí lo necesita: si no, la tabla queda abierta. */
+    .boletin__table tbody tr:last-child td {
+        border-bottom: 1px solid #ccc;
+    }
+
+    .boletin__table thead th {
+        border-top: 1px solid #ccc;
+    }
+
+    /* Rejilla completa, como un boletín impreso de verdad */
+    .boletin__table th,
+    .boletin__table td {
+        padding: 5px 4px;
+        font-size: 9px;
+        white-space: normal;
+        word-break: break-word;
+        border: 1px solid #ccc;
+
+        /* Sin esto el navegador descarta los fondos al imprimir */
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .boletin__table th {
+        font-size: 8px;
+        letter-spacing: 0;
+        background: #f2f2f2;
+    }
+
+    /* La columna fija no aplica en papel */
+    .boletin__table th.col-estudiante,
+    .boletin__table td.col-estudiante {
+        position: static;
+        width: 16%;
+    }
+
+    /* En papel el tinte de la columna final se vería sucio: basta la negrita */
+    .boletin__table th.col-final,
+    .boletin__table td.col-final {
+        background: #f2f2f2;
+    }
+
+    /* El badge no debe imponer un ancho mínimo que desborde la columna */
+    .nota-badge {
+        min-width: 0;
+        padding: 2px 5px;
+        font-size: 9px;
+
+        /* Los colores deben respetarse en papel */
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .boletin__table tr {
+        break-inside: avoid;
+    }
 }
