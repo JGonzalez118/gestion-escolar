@@ -1,102 +1,348 @@
-.actividades-layout {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 24px;
-    gap: 16px;
+/* =====================================================
+   ACTIVIDADES · Las de hoy destacadas + historial
+   Coherente con el resto del gestor: Bricolage Grotesque
+   (display) + Hanken Grotesk (cuerpo), paleta papel/tinta.
+   ===================================================== */
+
+.actividades {
+    /* Variables propias de la sección (no tocan el tema global) */
+    --paper: #f4efe4;
+    --paper-2: #ece5d6;
+    --card: #fbf8f1;
+    --field: #ffffff;
+    --ink: #1a3454;
+    --ink-deep: #122941;
+    --ink-soft: #5a6b80;
+    --line: #e0d8c6;
+    --cream: #f3ece0;
+    --accent: #9c8753;
+
+    /* Color por tipo de actividad (examen = más peso) */
+    --tipo-tarea: #3f7fbf;
+    --tipo-ejercicio: #2e9e5b;
+    --tipo-taller: #9c8753;
+    --tipo-examen: #d0492f;
+
+    font-family: 'Hanken Grotesk', system-ui, sans-serif;
+    color: var(--ink);
+    text-align: left;
 }
 
-.actividades-header {
+[data-theme="dark"] .actividades {
+    --paper: #0f1d2e;
+    --paper-2: #16273b;
+    --card: #16263a;
+    --field: #1b2c42;
+    --ink: #e9ddc8;
+    --ink-deep: #0a1623;
+    --ink-soft: #9aaabd;
+    --line: #2a3c52;
+    --cream: #f3ece0;
+    --accent: #c9b079;
+
+    --tipo-tarea: #6da9e0;
+    --tipo-ejercicio: #43c07a;
+    --tipo-taller: #c9b079;
+    --tipo-examen: #f0866a;
+}
+
+/* ===================== ENCABEZADO ===================== */
+
+.actividades__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 16px;
     flex-wrap: wrap;
-    gap: 8px;
+    padding: 22px 24px;
+    margin-bottom: 18px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
 }
 
-.header-fecha {
-    color: var(--secondary);
-    font-size: 14px;
+.actividades__title {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 26px;
+    letter-spacing: -.02em;
+    color: var(--ink);
+    margin: 0;
+}
+
+.actividades__date {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    border-radius: 999px;
     text-transform: capitalize;
 }
 
-.actividades-header .header-title {
+/* ===================== FILTROS ===================== */
+
+.actividades__filters {
     display: flex;
     align-items: center;
     gap: 12px;
+    flex-wrap: wrap;
+    padding: 14px 20px;
+    margin-bottom: 22px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
 }
 
-.actividades-header .header-bar {
-    width: 6px;
-    height: 32px;
-    border-radius: 4px;
-    background: var(--accent);
+.actividades__filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.actividades-content {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    padding: 16px;
-    text-align: left;
-}
-
-.estado-mensaje {
-    text-align: center;
-    color: var(--text);
-    padding: 32px 0;
-}
-
-.estado-mensaje.error {
-    color: var(--danger);
-}
-
-.actividades-tabla-wrapper {
-    overflow-x: auto;
-}
-
-.actividades-tabla {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.actividades-tabla th,
-.actividades-tabla td {
-    padding: 12px 16px;
-    text-align: left;
-    border-bottom: 1px solid var(--border);
-    color: var(--text);
-    vertical-align: top;
-}
-
-.actividades-tabla th {
-    color: var(--text-h);
+.actividades__filter-label {
+    font-size: 13px;
     font-weight: 600;
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
+    color: var(--ink-soft);
 }
 
-.actividades-tabla tbody tr:hover {
-    background: var(--accent-bg);
+.actividades__select {
+    padding: 9px 12px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--field);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color .18s, box-shadow .18s;
 }
+
+.actividades__select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.actividades__count {
+    margin-left: auto;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+}
+
+/* ===================== SECCIONES ===================== */
+
+.actividades__section {
+    margin-bottom: 30px;
+}
+
+.actividades__section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: -.01em;
+    color: var(--ink);
+    margin: 0 0 14px;
+}
+
+.actividades__section-count {
+    padding: 2px 9px;
+    font-family: 'Hanken Grotesk', system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink-soft);
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+}
+
+/* ===================== TARJETAS DE HOY (destacadas) ===================== */
+
+.actividades__today {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+}
+
+.actividad-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px 22px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--tipo, var(--accent));
+    border-radius: 16px;
+    transition: transform .18s, border-color .18s;
+}
+
+.actividad-card:hover {
+    transform: translateY(-2px);
+}
+
+.actividad-card__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.actividad-card__name {
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 19px;
+    line-height: 1.2;
+    color: var(--ink);
+    margin: 0;
+}
+
+.actividad-card__desc {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+}
+
+.actividad-card__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+}
+
+.actividad-card__materia {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+}
+
+.actividad-card__puntaje {
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--ink);
+    white-space: nowrap;
+}
+
+/* ===================== BADGE DE TIPO ===================== */
 
 .tipo-badge {
     display: inline-flex;
     align-items: center;
-    padding: 4px 10px;
+    flex-shrink: 0;
+    padding: 4px 11px;
     border-radius: 999px;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--primary);
-    background: var(--accent-bg);
-    border: 1px solid var(--accent-border);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--tipo, var(--accent));
+    background: color-mix(in srgb, var(--tipo, var(--accent)) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--tipo, var(--accent)) 35%, transparent);
 }
 
-.descripcion-cell {
-    max-width: 320px;
-    color: var(--secondary);
+.tipo--tarea { --tipo: var(--tipo-tarea); }
+.tipo--ejercicio { --tipo: var(--tipo-ejercicio); }
+.tipo--taller { --tipo: var(--tipo-taller); }
+.tipo--examen { --tipo: var(--tipo-examen); }
+
+/* ===================== HISTORIAL (agrupado por fecha) ===================== */
+
+.actividades__group {
+    margin-bottom: 18px;
+}
+
+.actividades__group-date {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+
+.actividades__group-date::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+}
+
+.actividades__list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.actividad-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 13px 18px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--tipo, var(--accent));
+    border-radius: 12px;
+    transition: border-color .18s;
+}
+
+.actividad-row:hover {
+    border-color: var(--accent);
+}
+
+.actividad-row__name {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--ink);
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.actividad-row__materia {
+    font-size: 13px;
+    color: var(--ink-soft);
+    white-space: nowrap;
+}
+
+.actividad-row__puntaje {
+    margin-left: auto;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink-soft);
+    white-space: nowrap;
+}
+
+/* ===================== MENSAJES ===================== */
+
+.actividades__message {
+    padding: 34px 0;
+    text-align: center;
     font-size: 14px;
+    color: var(--ink-soft);
+    background: var(--card);
+    border: 1px dashed var(--line);
+    border-radius: 16px;
+}
+
+.actividades__message--error {
+    color: var(--tipo-examen);
+    border-style: solid;
 }
