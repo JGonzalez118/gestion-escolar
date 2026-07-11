@@ -20,8 +20,8 @@ import "../styles/sidebar.css";
 // Si `roles` se omite, el enlace es visible para todos.
 const NAV_ITEMS = [
     { to: "/", label: "Dashboard", icon: LayoutDashboard },
-    { to: "/salon", label: "Salón", icon: School },
-    { to: "/estudiantes", label: "Estudiantes", icon: Users },
+    { to: "/salon", label: "Salón", icon: School, roles: ["docente"] },
+    { to: "/estudiantes", label: "Estudiantes", icon: Users, roles: ["docente"] },
     { to: "/actividades", label: "Actividades", icon: ClipboardList },
     { to: "/boletin", label: "Boletín escolar", icon: FileText, roles: ["docente"] },
     { to: "/grados", label: "Grados", icon: Layers, roles: ["docente"] },

@@ -1,14 +1,10 @@
 const ClaseActualCard = ({ materia }) => {
-
     return (
-        <div className="clase-actual-card">
-
-            <h2>Clase actual</h2>
-
-            <span>
-                {materia?.nombre || "no se detecta materia"}
+        <div className="salon-card clase-actual">
+            <span className="clase-actual__label">Clase actual</span>
+            <span className="clase-actual__value">
+                {materia?.nombre || "Sin materia seleccionada"}
             </span>
-
         </div>
     );
 };

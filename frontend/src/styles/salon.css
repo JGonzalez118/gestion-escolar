@@ -1,246 +1,411 @@
-.salon-layout {
-    display: flex;
-    min-height: 100vh;
-    background: var(--bg);
+/* =====================================================
+   SALÓN · Toma de asistencia y actividades
+   Coherente con login/sidebar/dashboard: Bricolage
+   Grotesque (display) + Hanken Grotesk (cuerpo),
+   paleta papel/tinta.
+   ===================================================== */
+
+.salon {
+    /* Variables propias de la sección (no tocan el tema global) */
+    --paper: #f4efe4;
+    --paper-2: #ece5d6;
+    --card: #fbf8f1;
+    --field: #ffffff;
+    --ink: #1a3454;
+    --ink-deep: #122941;
+    --ink-soft: #5a6b80;
+    --line: #e0d8c6;
+    --cream: #f3ece0;
+    --accent: #9c8753;
+
+    /* Estados de asistencia */
+    --est-p: #2e9e5b;
+    --est-a: #d0492f;
+    --est-t: #d9a406;
+    --est-e: #7a8699;
+
+    font-family: 'Hanken Grotesk', system-ui, sans-serif;
+    color: var(--ink);
+    text-align: left;
 }
 
-.salon-main {
-    flex: 1;
-    padding: 40px;
+[data-theme="dark"] .salon {
+    --paper: #0f1d2e;
+    --paper-2: #16273b;
+    --card: #16263a;
+    --field: #1b2c42;
+    --ink: #e9ddc8;
+    --ink-deep: #0a1623;
+    --ink-soft: #9aaabd;
+    --line: #2a3c52;
+    --cream: #f3ece0;
+    --accent: #c9b079;
+
+    --est-p: #43c07a;
+    --est-a: #f0866a;
+    --est-t: #eec04a;
+    --est-e: #9aaabd;
 }
 
-.salon-header {
+/* ===================== ENCABEZADO ===================== */
+
+.salon__header {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: center;
-
-    background: var(--card-bg);
-
-    border-radius: 18px;
-
-    padding: 20px 30px;
-
-    margin-bottom: 24px;
-
-    box-shadow: var(--shadow);
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 22px 24px;
+    margin-bottom: 20px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
 }
 
-.header-title {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.header-bar {
-    width: 18px;
-    height: 70px;
-    border-radius: 20px;
-    background: var(--primary);
-}
-
-.header-title h1 {
-    color: var(--text-h);
-    font-size: 3rem;
+.salon__title {
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 26px;
+    letter-spacing: -.02em;
+    color: var(--ink);
     margin: 0;
 }
 
-.header-year {
-    color: var(--text-h);
-    font-size: 2rem;
-    font-weight: 600;
+.salon__title em {
+    font-style: normal;
+    color: var(--accent);
 }
 
-.salon-grid {
+.salon__period {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+/* ===================== SELECTOR DE MATERIA ===================== */
+
+.salon__materia {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    margin-bottom: 20px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+}
+
+.salon__materia-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+}
+
+.salon__select {
+    padding: 9px 12px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--field);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color .18s, box-shadow .18s;
+}
+
+.salon__select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+/* ===================== GRID ===================== */
+
+.salon__grid {
     display: grid;
     grid-template-columns: 1.1fr 1fr;
-    gap: 24px;
+    gap: 20px;
+    align-items: start;
 }
 
-.card,
-.clase-actual-card,
-.actividad-form {
-    background: var(--card-bg);
-    border-radius: 28px;
-    overflow: hidden;
-    box-shadow: var(--shadow);
-}
-
-.card-top {
-    height: 36px;
-    background: var(--primary);
-}
-
-.card-content {
-    padding: 26px;
-}
-
-.card-content h2,
-.clase-actual-card h2,
-.actividad-form h2 {
-    color: var(--text-h);
-    font-size: 2rem;
-    margin-bottom: 18px;
-}
-
-.divider {
-    width: 100%;
-    height: 1px;
-    background: #d8d8d8;
-    margin: 20px 0;
-}
-
-.student-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    padding: 16px 0;
-
-    border-bottom: 1px solid #d8d8d8;
-}
-
-.student-item h3 {
-    color: var(--text-h);
-    font-size: 1.8rem;
-    margin: 0 0 10px;
-}
-
-.link-button {
-    border: none;
-    background: transparent;
-    color: #2d9bf0;
-    cursor: pointer;
-    font-size: 1rem;
-    padding: 0;
-}
-
-.estado {
-    color: var(--text-h);
-    font-weight: 700;
-}
-
-.right-column {
+.salon__col {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 20px;
+    min-width: 0;
 }
 
-.clase-actual-card {
-    padding: 20px;
-}
+/* ===================== TARJETA BASE ===================== */
 
-.clase-actual-card span {
-    font-size: 1.3rem;
-}
-
-.actividad-form {
+.salon-card {
     padding: 24px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+}
+
+.salon-card__title {
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 17px;
+    color: var(--ink);
+    margin: 0 0 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+}
+
+/* ===================== ASISTENCIA ===================== */
+
+.asistencia__list {
     display: flex;
     flex-direction: column;
-
 }
 
-.actividad-form input,
-.actividad-form textarea {
-    width: 100%;
-    border: none;
-
-    background: var(--social-bg);
-    color: var(--text);
-
-    border-radius: 18px;
-
-    padding: 18px;
-
-    margin-bottom: 18px;
-
-    font-size: 1rem;
-
-    outline: none;
-}
-
-.actividad-form textarea {
-    min-height: 250px;
-    resize: none;
-}
-
-.row-inputs {
+.asistencia__row {
     display: flex;
+    align-items: center;
+    justify-content: space-between;
     gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
 }
 
-.buttons-row {
-    display: flex;
-    gap: 14px;
+.asistencia__row:last-of-type {
+    border-bottom: none;
 }
 
-.primary-btn,
-.secondary-btn {
-    flex: 1;
+.asistencia__name {
+    font-size: 14.5px;
+    font-weight: 500;
+    color: var(--ink);
+}
 
-    border: none;
+.asistencia__chips {
+    display: inline-flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
 
-    border-radius: 18px;
-
-    padding: 18px;
-
-    cursor: pointer;
-
+.chip {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+    font-size: 13px;
     font-weight: 700;
-
-    transition: 0.2s;
+    color: var(--ink-soft);
+    background: transparent;
+    border: 1.5px solid var(--line);
+    border-radius: 9px;
+    cursor: pointer;
+    transition: color .15s, background .15s, border-color .15s, transform .06s;
 }
 
-.primary-btn {
-    background: var(--primary);
-    color: white;
+.chip:hover {
+    border-color: var(--est);
+    color: var(--est);
 }
 
-.secondary-btn {
-    background: var(--secondary);
-    color: white;
+.chip:active {
+    transform: scale(.92);
 }
 
-.primary-btn:hover,
-.secondary-btn:hover {
-    transform: translateY(-2px);
+/* Color por estado (cada chip declara --est según su tipo) */
+.chip--p { --est: var(--est-p); }
+.chip--a { --est: var(--est-a); }
+.chip--t { --est: var(--est-t); }
+.chip--e { --est: var(--est-e); }
+
+.chip--active {
+    color: #fff;
+    background: var(--est);
+    border-color: var(--est);
 }
+
+.asistencia__empty {
+    padding: 24px 0;
+    text-align: center;
+    font-size: 14px;
+    color: var(--ink-soft);
+}
+
+.asistencia__save {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: 20px;
+    padding: 13px 20px;
+    font-family: inherit;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--cream);
+    background: var(--ink);
+    border: none;
+    border-radius: 11px;
+    cursor: pointer;
+    transition: background .18s, opacity .18s;
+}
+
+[data-theme="dark"] .asistencia__save {
+    color: var(--ink-deep);
+    background: var(--cream);
+}
+
+.asistencia__save:hover:not(:disabled) {
+    background: var(--ink-deep);
+}
+
+[data-theme="dark"] .asistencia__save:hover:not(:disabled) {
+    background: #fff;
+}
+
+.asistencia__save:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+/* ===================== CLASE ACTUAL ===================== */
+
+.clase-actual__label {
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+
+.clase-actual__value {
+    display: block;
+    margin-top: 6px;
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--ink);
+}
+
+/* ===================== FORMULARIO DE ACTIVIDAD ===================== */
+
+.actividad-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.actividad-form__input,
+.actividad-form__textarea,
+.actividad-form__select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    font-family: inherit;
+    font-size: 14.5px;
+    color: var(--ink);
+    background: var(--field);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    outline: none;
+    transition: border-color .18s, box-shadow .18s;
+}
+
+.actividad-form__input::placeholder,
+.actividad-form__textarea::placeholder {
+    color: var(--ink-soft);
+    opacity: .55;
+}
+
+.actividad-form__input:focus,
+.actividad-form__textarea:focus,
+.actividad-form__select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.actividad-form__textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.actividad-form__row {
+    display: flex;
+    gap: 12px;
+}
+
+.actividad-form__row > * {
+    flex: 1;
+}
+
+.actividad-form__buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.btn-secondary,
+.btn-primary {
+    flex: 1;
+    padding: 13px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 11px;
+    cursor: pointer;
+    transition: background .18s, border-color .18s, transform .06s;
+}
+
+.btn-secondary {
+    color: var(--ink-soft);
+    background: transparent;
+    border: 1px solid var(--line);
+}
+
+.btn-secondary:hover {
+    color: var(--ink);
+    border-color: var(--accent);
+}
+
+.btn-primary {
+    color: var(--cream);
+    background: var(--ink);
+    border: 1px solid var(--ink);
+}
+
+[data-theme="dark"] .btn-primary {
+    color: var(--ink-deep);
+    background: var(--cream);
+    border-color: var(--cream);
+}
+
+.btn-primary:hover {
+    background: var(--ink-deep);
+    border-color: var(--ink-deep);
+}
+
+[data-theme="dark"] .btn-primary:hover {
+    background: #fff;
+    border-color: #fff;
+}
+
+.btn-secondary:active,
+.btn-primary:active {
+    transform: translateY(1px);
+}
+
+/* ===================== RESPONSIVE ===================== */
 
 @media (max-width: 1100px) {
-
-    .salon-grid {
+    .salon__grid {
         grid-template-columns: 1fr;
     }
-
-    .header-title h1 {
-        font-size: 2rem;
-    }
-
-    .header-year {
-        font-size: 1.2rem;
-    }
-}
-
-.materia-selector {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-    background: var(--card-bg);
-    padding: 12px 16px;
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-}
-
-.materia-selector label {
-    color: var(--text-h);
-    font-weight: 500;
-}
-
-.materia-selector select {
-    padding: 6px 10px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: var(--card-bg);
-    color: var(--text);
 }

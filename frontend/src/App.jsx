@@ -41,7 +41,7 @@ function App() {
 
           <Route path="/estudiantes"
             element={
-              <PrivateRoute>
+              <PrivateRoute role="docente">
                 <Estudiantes />
               </PrivateRoute>
             } />
@@ -55,7 +55,7 @@ function App() {
 
           <Route path="/salon"
             element={
-              <PrivateRoute>
+              <PrivateRoute role="docente">
                 <Salon />
               </PrivateRoute>
             } />
