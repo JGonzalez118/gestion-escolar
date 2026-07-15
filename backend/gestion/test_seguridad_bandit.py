@@ -101,3 +101,30 @@ def test_bandit_detecta_secreto_hardcodeado_en_settings():
         "fue remediado y esta prueba debe actualizarse para exigir 0 "
         "hallazgos en su lugar."
     )
+
+def test_codigo_critico_no_tiene_vulnerabilidades_de_severidad_media():
+    """
+    No funcional #3 (Bandit - SAST)
+
+    El código crítico del backend que procesa solicitudes no debe contener 
+    vulnerabilidades de severidad MEDIA. Esto previene regresiones de seguridad 
+    comunes, como el uso de la función peligrosa eval(), el uso inseguro de la 
+    librería subprocess (por ejemplo, shell=True), o la generación de números 
+    aleatorios no criptográficos para datos sensibles.
+    """
+    reporte = _ejecutar_bandit(ARCHIVOS_CRITICOS)
+
+    # Filtramos las vulnerabilidades clasificadas estrictamente como MEDIUM
+    medio = [
+        r for r in reporte["results"]
+        if r["issue_severity"] == "MEDIUM"
+    ]
+
+    mensaje = "\n".join(
+        f"- {r['test_id']} en {r['filename']}:{r['line_number']} -> {r['issue_text']}"
+        for r in medio
+    )
+
+    assert medio == [], (
+        f"Se encontraron {len(medio)} hallazgo(s) de severidad MEDIA en el código crítico:\n{mensaje}"
+    )

@@ -58,3 +58,37 @@ def test_docente_solo_ve_estudiantes_de_su_propio_salon(
     assert estudiante_del_salon.cedula in cedulas_visibles
     assert estudiante_ajeno.cedula not in cedulas_visibles
     assert len(resultados) == 1
+
+@pytest.mark.django_db
+def test_docente_no_puede_modificar_estudiante_de_otro_salon(
+    api_client,
+    docente_con_salon,
+    otro_salon_con_estudiante,
+):
+    """
+    Funcional #3
+    Un docente que intenta alterar la información de un estudiante que NO 
+    pertenece a su salón (consejería) mediante una petición PUT/PATCH debe recibir 
+    un código de error HTTP (403 Forbidden o 404 Not Found), evitando modificaciones 
+    no autorizadas entre salones de clase.
+    """
+    user, docente, salon = docente_con_salon
+    _, estudiante_ajeno = otro_salon_con_estudiante
+
+    # Autenticamos al docente principal (María)
+    api_client.force_authenticate(user=user)
+
+    # Intentamos actualizar los datos de 'Carlos' (que es del salón de Juan)
+    url_estudiante_ajeno = f"/api/estudiantes/{estudiante_ajeno.id}/"
+    payload_cambio = {
+        "nombre": "Carlos Modificado",
+        "apellido": "Rios"
+    }
+
+    response = api_client.put(url_estudiante_ajeno, payload_cambio, format="json")
+
+    # Esperamos que el sistema proteja el recurso denegando el acceso o no encontrándolo
+    assert response.status_code in [403, 404], (
+        f"Se esperaba un código 403 o 404, pero se obtuvo {response.status_code}. "
+        f"¡Un docente pudo intentar modificar un estudiante ajeno!"
+    )
