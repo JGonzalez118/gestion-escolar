@@ -5,6 +5,7 @@ from django.db.models import Avg
 from .models import *
 from .serializers import *
 from .calendario import *
+from .tasks import notificar_ausencia
 
 # permisos
 from .permissions import EsDocente, EsEstudiante
@@ -462,6 +463,10 @@ class AsistenciaViewSet(viewsets.ModelViewSet):
             fecha=fecha,
             defaults={"estado": estado},
         )
+
+        # NOTIFICAR ESTUDIANTE AUSENTE
+        if estado == "A":
+            notificar_ausencia.delay(estudiante_id, materia_id, fecha)
 
         serializer = self.get_serializer(asistencia)
         status_code = 201 if creada else 200
