@@ -16,6 +16,14 @@ const FORM_INICIAL = {
     descripcion: "",
 };
 
+const obtenerFechaLocal = () => {
+    const hoy = new Date();
+    const anio = hoy.getFullYear();
+    const mes = String(hoy.getMonth() + 1).padStart(2, "0");
+    const dia = String(hoy.getDate()).padStart(2, "0");
+    return `${anio}-${mes}-${dia}`;
+};
+
 const CrearActividadForm = ({ materiaId, periodoId }) => {
     const [form, setForm] = useState(FORM_INICIAL);
 
@@ -36,7 +44,7 @@ const CrearActividadForm = ({ materiaId, periodoId }) => {
         const payload = {
             ...form,
             puntaje_maximo: Number(form.puntaje_maximo),
-            fecha: new Date().toISOString().split("T")[0], // YYYY-MM-DD
+            fecha: obtenerFechaLocal(),
             materia: materiaId,
             periodo: periodoId,
         };
